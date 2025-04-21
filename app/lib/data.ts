@@ -1,3 +1,5 @@
+"use server";
+
 import { Category } from "@/app/lib/definitions";
 import { neon } from "@neondatabase/serverless";
 
