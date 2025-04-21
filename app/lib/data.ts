@@ -1,9 +1,7 @@
-"use server";
-
 import { Category } from "@/app/lib/definitions";
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.NEXT_PUBLIC_DATABASE_URL!);
+const sql = neon(process.env.DATABASE_URL!);
 
 export async function getCategories() {
     await sql`
