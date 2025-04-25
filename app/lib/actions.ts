@@ -74,3 +74,28 @@ export async function createCategory(formData: FormData) {
     revalidatePath("/");
     redirect("/");
 }
+
+// export async function updateCategory(oldName: string, formData: FormData) {
+//     const result = z.string().safeParse(formData.get("name"));
+
+//     if (!result.success) {
+//         return { errors: "result.error.issues" };
+//     }
+
+//     await sql`UPDATE categories SET name = ${result.data} WHERE name = ${oldName}`;
+//     revalidatePath("/categories");
+//     redirect("/categories");
+// }
+
+// export async function deleteCategory(name: string) {
+//     await sql`DELETE FROM categories WHERE name = ${name}`;
+//     const response = await sql`SELECT count(*) FROM categories`;
+//     console.log(response);
+
+// if (parseInt(response) <= 0) {
+//     await sql`DROP TABLE categories`;
+// }
+
+//     revalidatePath("/categories");
+//     redirect("/categories");
+// }
