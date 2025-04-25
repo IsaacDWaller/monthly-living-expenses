@@ -1,4 +1,3 @@
-import { Category } from "@/app/lib/definitions";
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
@@ -12,5 +11,5 @@ export async function getCategories() {
     `;
 
     const response = await sql`SELECT * FROM categories`;
-    return response as Category[];
+    return response;
 }
