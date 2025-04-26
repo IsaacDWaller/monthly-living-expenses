@@ -1,5 +1,4 @@
-export type Category = {
-    id: string,
-    name: string,
-    emoji: string,
+export type State = {
+    isError: boolean,
+    messages: string[] | null,
 };

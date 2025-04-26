@@ -1,6 +1,7 @@
 "use client";
 
 import { createCategory } from "@/app/lib/actions";
+import { State } from "@/app/lib/definitions";
 import { getEmojisData } from "@/app/lib/requests";
 import Picker from "@emoji-mart/react";
 import Button from "@mui/material/Button";
@@ -8,13 +9,31 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Form from "next/form";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+
+type EmojiSelectEvent = {
+    aliases: string[],
+    id: string,
+    keywords: string[],
+    name: string,
+    native: string,
+    shortcodes: string,
+    skin: number,
+    unified: string,
+};
+
+const initialState: State = {
+    isError: false,
+    messages: null,
+};
 
 export default function CreateCategory() {
     const [pickerIsOpen, setPickerIsOpen] = useState(false);
     const [selectedEmoji, setSelectedEmoji] = useState("💵");
 
-    function handleEmojiSelect(event) {
+    const [state, formAction] = useActionState(createCategory, initialState);
+
+    function handleEmojiSelect(event: EmojiSelectEvent) {
         setSelectedEmoji(event.native);
         setPickerIsOpen(false);
     }
@@ -27,7 +46,7 @@ export default function CreateCategory() {
         <>
             <Typography variant="h2">Create Category</Typography>
 
-            <Form action={createCategory}>
+            <Form action={formAction}>
                 <TextField label="Name" required name="name" />
 
                 {!pickerIsOpen ?
@@ -53,6 +72,11 @@ export default function CreateCategory() {
                         onClickOutside={handleClickOutside}
                     />
                 }
+
+                {/* change colour if error or not */}
+                {state.messages && state.messages.map(message => (
+                    <p key={message}>{message}</p>
+                ))}
 
                 <Button type="submit">Create</Button>
             </Form>

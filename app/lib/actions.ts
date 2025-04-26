@@ -1,8 +1,7 @@
 "use server";
 
-import { Category } from "@/app/lib/definitions";
+import { State } from "@/app/lib/definitions";
 import { neon } from "@neondatabase/serverless";
-import GraphemeSplitter from "grapheme-splitter";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -11,23 +10,23 @@ const sql = neon(process.env.DATABASE_URL!);
 
 const CategorySchema = z.object({
     name: z.string().trim()
-        .min(1, { message: "The name must be at least 1 character." })
-        .max(64, { message: "The name must be at most 64 characters." }),
-    emoji: z.string().emoji({ message: "The emoji must be an emoji." }),
+        .min(1, { message: "The name field doesn't contain any characters." })
+        .max(64, { message: "The name field contains more than 64 characters." }),
+    emoji: z.string().emoji(),
 });
 
-const splitter = new GraphemeSplitter();
-
-export async function createCategory(formData: FormData) {
+export async function createCategory(previousState: State, formData: FormData) {
     const parseResult = CategorySchema.safeParse({
         name: formData.get("name"),
         emoji: formData.get("emoji"),
     });
 
     if (!parseResult.success) {
-        const errors = parseResult.error.flatten().fieldErrors;
-        console.error(errors);
-        return errors;
+        const errorMessages = parseResult.error.errors.map(error => (
+            error.message
+        ));
+
+        return { isError: true, messages: errorMessages };
     }
 
     const category = {
@@ -39,24 +38,13 @@ export async function createCategory(formData: FormData) {
         SELECT 1
         FROM categories
         WHERE name = ${category.name}
-    ` as Category[];
+    `;
 
     if (existingCategories.length) {
-        const errors = { name: "A category with this name already exists." };
-        console.error(errors);
-        return errors;
-    }
-
-    if (splitter.countGraphemes(category.emoji) < 1) {
-        const errors = { name: "The emoji contains less than 1 emoji." };
-        console.error(errors);
-        return errors;
-    }
-
-    if (splitter.countGraphemes(category.emoji) > 1) {
-        const errors = { name: "The emoji contains more than 1 emoji." };
-        console.error(errors);
-        return errors;
+        return {
+            isError: true,
+            messages: ["A category with this name already exists."]
+        }
     }
 
     await sql`
@@ -75,27 +63,14 @@ export async function createCategory(formData: FormData) {
     redirect("/");
 }
 
-// export async function updateCategory(oldName: string, formData: FormData) {
-//     const result = z.string().safeParse(formData.get("name"));
+export async function deleteCategory(name: string) {
+    await sql`DELETE FROM categories WHERE name = ${name}`;
+    const existingCategories = await sql`SELECT 1 FROM categories`;
 
-//     if (!result.success) {
-//         return { errors: "result.error.issues" };
-//     }
+    if (!existingCategories.length) {
+        await sql`DROP TABLE categories`;
+    }
 
-//     await sql`UPDATE categories SET name = ${result.data} WHERE name = ${oldName}`;
-//     revalidatePath("/categories");
-//     redirect("/categories");
-// }
-
-// export async function deleteCategory(name: string) {
-//     await sql`DELETE FROM categories WHERE name = ${name}`;
-//     const response = await sql`SELECT count(*) FROM categories`;
-//     console.log(response);
-
-// if (parseInt(response) <= 0) {
-//     await sql`DROP TABLE categories`;
-// }
-
-//     revalidatePath("/categories");
-//     redirect("/categories");
-// }
+    revalidatePath("/");
+    redirect("/");
+}
