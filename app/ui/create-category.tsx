@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Form from "next/form";
 import { useActionState, useState } from "react";
+import Alert from "@mui/material/Alert";
 
 type EmojiSelectEvent = {
     aliases: string[],
@@ -23,8 +24,7 @@ type EmojiSelectEvent = {
 };
 
 const initialState: State = {
-    isError: false,
-    messages: null,
+    errorMessages: null,
 };
 
 export default function CreateCategory() {
@@ -73,9 +73,13 @@ export default function CreateCategory() {
                     />
                 }
 
-                {/* change colour if error or not */}
-                {state.messages && state.messages.map(message => (
-                    <p key={message}>{message}</p>
+                {state.errorMessages && state.errorMessages.map(errorMessage => (
+                    <Alert
+                        key={errorMessage}
+                        severity="error"
+                    >
+                        {errorMessage}
+                    </Alert>
                 ))}
 
                 <Button type="submit">Create</Button>

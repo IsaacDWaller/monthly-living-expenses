@@ -26,7 +26,7 @@ export async function createCategory(previousState: State, formData: FormData) {
             error.message
         ));
 
-        return { isError: true, messages: errorMessages };
+        return { errorMessages };
     }
 
     const category = {
@@ -41,10 +41,7 @@ export async function createCategory(previousState: State, formData: FormData) {
     `;
 
     if (existingCategories.length) {
-        return {
-            isError: true,
-            messages: ["A category with this name already exists."]
-        }
+        return { errorMessages: ["A category with this name already exists."] };
     }
 
     await sql`
