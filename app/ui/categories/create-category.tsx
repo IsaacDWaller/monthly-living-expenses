@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Form from "next/form";
 import { useActionState } from "react";
 import Alert from "@mui/material/Alert";
-import EmojiPicker from "@/app/ui/emoji-picker";
+import EmojiPicker from "@/app/ui/categories/emoji-picker";
 
 const initialState: State = { errorMessages: null };
 

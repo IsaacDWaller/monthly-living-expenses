@@ -3,13 +3,16 @@
 import { deleteCategory } from "@/app/lib/actions";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useState } from "react";
-import DialogTitle from "@mui/material/DialogTitle";
-import { Button, DialogActions, DialogContent, DialogContentText } from "@mui/material";
 
 type InitialCategoryItemProps = {
     name: string,

@@ -1,7 +1,7 @@
 "use client";
 
-import EditingCategoryItem from "@/app/ui/editing-category-item";
-import InitialCategoryItem from "@/app/ui/initial-category-item";
+import EditingCategoryItem from "@/app/ui/categories/editing-category-item";
+import InitialCategoryItem from "@/app/ui/categories/initial-category-item";
 import { useState } from "react";
 
 type CategoryItemProps = {

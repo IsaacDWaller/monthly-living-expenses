@@ -2,7 +2,7 @@
 
 import { updateCategory } from "@/app/lib/actions";
 import { State } from "@/app/lib/definitions";
-import EmojiPicker from "@/app/ui/emoji-picker";
+import EmojiPicker from "@/app/ui/categories/emoji-picker";
 import CancelOutlined from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlined from "@mui/icons-material/CheckCircleOutlined";
 import Alert from "@mui/material/Alert";

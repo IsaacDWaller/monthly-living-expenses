@@ -1,11 +1,5 @@
-import Categories from "@/app/ui/categories";
-import CreateCategory from "@/app/ui/create-category";
+import Typography from "@mui/material/Typography";
 
 export default async function Page() {
-  return (
-    <>
-      <CreateCategory />
-      <Categories />
-    </>
-  );
+  return <Typography variant="h1">Monthly Living Expenses</Typography>;
 }
