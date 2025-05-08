@@ -1,5 +1,5 @@
 import { getCategories } from "@/app/lib/data";
-import CategoryListItem from "@/app/ui/category-list-item";
+import CategoryItem from "@/app/ui/category-item";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 
@@ -12,7 +12,7 @@ export default async function Categories() {
 
             <List>
                 {categories.map((category) => (
-                    <CategoryListItem
+                    <CategoryItem
                         key={category.name}
                         name={category.name}
                         emoji={category.emoji}

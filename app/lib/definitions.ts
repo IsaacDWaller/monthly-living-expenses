@@ -1,3 +1,1 @@
-export type State = {
-    errorMessages: string[] | null,
-};
+export type State = { errorMessages: string[] | null };
