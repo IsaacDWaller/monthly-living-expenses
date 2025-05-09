@@ -1,6 +1,6 @@
 "use client";
 
-import { createCategory } from "@/app/lib/actions";
+import { createCategory } from "@/app/lib/categories/actions";
 import { State } from "@/app/lib/definitions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";

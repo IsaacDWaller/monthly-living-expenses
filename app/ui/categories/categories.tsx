@@ -1,4 +1,4 @@
-import { getCategories } from "@/app/lib/data";
+import { getCategories } from "@/app/lib/categories/data";
 import CategoryItem from "@/app/ui/categories/category-item";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";

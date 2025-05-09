@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCategory } from "@/app/lib/actions";
+import { deleteCategory } from "@/app/lib/categories/actions";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import Button from "@mui/material/Button";
@@ -60,7 +60,6 @@ export default function InitialCategoryItem({
 
                 <Button onClick={() => setDialogIsOpen(false)}>Cancel</Button>
             </DialogActions>
-            {/* onClick={deleteCategoryWithName} */}
         </Dialog>
 
         <ListItem

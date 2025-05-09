@@ -1,6 +1,6 @@
 "use client";
 
-import { updateCategory } from "@/app/lib/actions";
+import { updateCategory } from "@/app/lib/categories/actions";
 import { State } from "@/app/lib/definitions";
 import EmojiPicker from "@/app/ui/categories/emoji-picker";
 import CancelOutlined from "@mui/icons-material/CancelOutlined";

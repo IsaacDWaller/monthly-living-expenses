@@ -1,6 +1,6 @@
 "use client";
 
-import { getEmojisData } from "@/app/lib/requests";
+import { getEmojisData } from "@/app/lib/categories/requests";
 import Picker from "@emoji-mart/react";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
