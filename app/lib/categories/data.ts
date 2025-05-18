@@ -1,8 +1,9 @@
+import { Category } from "@/app/lib/categories/definitions";
 import { getSQL } from "@/app/lib/data";
 
 const sql = getSQL();
 
-export async function getCategories() {
+export async function getCategories(): Promise<Category[]> {
     await sql`
         CREATE TABLE IF NOT EXISTS categories (
             name VARCHAR(64) PRIMARY KEY,
@@ -11,5 +12,5 @@ export async function getCategories() {
     `;
 
     const response = await sql`SELECT * FROM categories`;
-    return response;
+    return response as Category[];
 }

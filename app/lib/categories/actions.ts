@@ -1,60 +1,31 @@
 "use server";
 
 import { getSQL } from "@/app/lib/data";
-import { State } from "@/app/lib/definitions";
+import { Error } from "@/app/lib/definitions";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z, ZodIssue } from "zod";
+import { z } from "zod";
 
 const sql = getSQL();
 
 const CategorySchema = z.object({
     name: z.string().trim()
-        .min(1, { message: "The name field doesn't contain any characters." })
-        .max(64, { message: "The name field contains more than 64 characters." }),
+        .min(1, { message: "Please enter at least 1 character" })
+        .max(64, { message: "Please enter at most 64 characters" }),
     emoji: z.string().emoji(),
 });
 
-type Category = {
-    name: string,
-    emoji: string,
-}
-
-function parseCategory(formData: FormData) {
-    return CategorySchema.safeParse({
+export async function createCategory(previousState: Error[], formData: FormData): Promise<Error[]> {
+    const parseResult = CategorySchema.safeParse({
         name: formData.get("name"),
         emoji: formData.get("emoji"),
     });
-}
-
-function getErrorMessages(errors: ZodIssue[]) {
-    return errors.map(error => error.message);
-}
-
-function getCategory(categoryData: Category) {
-    return {
-        name: categoryData.name.trim(),
-        emoji: categoryData.emoji,
-    };
-}
-
-export async function createCategory(previousState: State, formData: FormData) {
-    const parseResult = parseCategory(formData);
 
     if (!parseResult.success) {
-        return { errorMessages: getErrorMessages(parseResult.error.errors) };
-    }
-
-    const category = getCategory(parseResult.data);
-
-    const existingCategories = await sql`
-        SELECT 1
-        FROM categories
-        WHERE name = ${category.name}
-    `;
-
-    if (existingCategories.length) {
-        return { errorMessages: ["A category with this name already exists."] };
+        return parseResult.error.errors.map(error => ({
+            input: error.path[0],
+            helperText: error.message,
+        } as Error));
     }
 
     await sql`
@@ -64,46 +35,66 @@ export async function createCategory(previousState: State, formData: FormData) {
         )
     `;
 
-    await sql`
-        INSERT INTO categories
-        VALUES (${category.name}, ${category.emoji})
-    `;
-
-    revalidatePath("/");
-    redirect("/");
-}
-
-export async function updateCategory(
-    extras: { oldName: string },
-    previousState: State,
-    formData: FormData,
-) {
-    const parseResult = parseCategory(formData);
-
-    if (!parseResult.success) {
-        return { errorMessages: getErrorMessages(parseResult.error.errors) };
-    }
-
-    const category = getCategory(parseResult.data);
+    const { name, emoji } = parseResult.data;
+    const trimmedName = name.trim();
 
     const existingCategories = await sql`
         SELECT 1
         FROM categories
-        WHERE name = ${category.name}
+        WHERE name = ${trimmedName}
     `;
 
     if (existingCategories.length) {
-        return { errorMessages: ["A category with this name already exists."] };
+        return [{ input: "name", helperText: "Please enter a unique name" }]
+    }
+
+    await sql`
+        INSERT INTO categories
+        VALUES (${trimmedName}, ${emoji})
+    `;
+
+    revalidatePath("/categories");
+    redirect("/categories");
+}
+
+export async function updateCategory(
+    extras: { oldName: string },
+    previousState: Error[],
+    formData: FormData,
+): Promise<Error[]> {
+    const parseResult = CategorySchema.safeParse({
+        name: formData.get("name"),
+        emoji: formData.get("emoji"),
+    });
+
+    if (!parseResult.success) {
+        return parseResult.error.errors.map(error => ({
+            input: error.path[0],
+            helperText: error.message,
+        } as Error));
+    }
+
+    const { name, emoji } = parseResult.data;
+    const trimmedName = name.trim();
+
+    const existingCategories = await sql`
+        SELECT 1
+        FROM categories
+        WHERE name = ${trimmedName}
+    `;
+
+    if (existingCategories.length) {
+        return [{ input: "name", helperText: "Please enter a unique name" }]
     }
 
     await sql`
         UPDATE categories
-        SET name = ${category.name}, emoji = ${category.emoji}
+        SET name = ${trimmedName}, emoji = ${emoji}
         WHERE name = ${extras.oldName}
     `;
 
-    revalidatePath("/");
-    redirect("/");
+    revalidatePath("/categories");
+    redirect("/categories");
 }
 
 export async function deleteCategory(name: string) {
@@ -114,6 +105,6 @@ export async function deleteCategory(name: string) {
         await sql`DROP TABLE categories`;
     }
 
-    revalidatePath("/");
-    redirect("/");
+    revalidatePath("/categories");
+    redirect("/categories");
 }

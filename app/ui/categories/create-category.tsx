@@ -1,38 +1,38 @@
 "use client";
 
 import { createCategory } from "@/app/lib/categories/actions";
-import { State } from "@/app/lib/definitions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Form from "next/form";
 import { useActionState } from "react";
-import Alert from "@mui/material/Alert";
 import EmojiPicker from "@/app/ui/categories/emoji-picker";
-
-const initialState: State = { errorMessages: null };
+import { Stack } from "@mui/material";
 
 export default function CreateCategory() {
-    const [state, formAction] = useActionState(createCategory, initialState);
+    const [state, formAction] = useActionState(createCategory, []);
 
     return (
         <>
             <Typography variant="h2">Create Category</Typography>
 
             <Form action={formAction}>
-                <EmojiPicker />
-                <TextField label="Name" required name="name" />
+                <Stack direction="column" spacing={2}>
+                    <Stack direction="row" spacing={2}>
+                        <EmojiPicker />
 
-                {state.errorMessages && state.errorMessages.map(errorMessage => (
-                    <Alert
-                        key={errorMessage}
-                        severity="error"
-                    >
-                        {errorMessage}
-                    </Alert>
-                ))}
+                        <TextField
+                            fullWidth
+                            label="Name"
+                            required
+                            name="name"
+                            error={state.some(error => error.input === "name")}
+                            helperText={state.find(error => error.input === "name")?.helperText}
+                        />
+                    </Stack>
 
-                <Button type="submit">Create</Button>
+                    <Button type="submit">Create</Button>
+                </Stack>
             </Form>
         </>
     );

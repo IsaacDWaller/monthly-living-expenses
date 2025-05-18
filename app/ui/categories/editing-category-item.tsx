@@ -1,18 +1,14 @@
 "use client";
 
 import { updateCategory } from "@/app/lib/categories/actions";
-import { State } from "@/app/lib/definitions";
 import EmojiPicker from "@/app/ui/categories/emoji-picker";
 import CancelOutlined from "@mui/icons-material/CancelOutlined";
 import CheckCircleOutlined from "@mui/icons-material/CheckCircleOutlined";
-import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import Form from "next/form";
 import { useActionState, useState } from "react";
-
-const initialState: State = { errorMessages: null };
 
 type EditingCategoryItemProps = {
     name: string,
@@ -28,7 +24,7 @@ export default function EditingCategoryItem({
     const [nameInputValue, setNameInputValue] = useState(name);
 
     const updateCategoryWithName = updateCategory.bind(null, { oldName: name });
-    const [state, formAction] = useActionState(updateCategoryWithName, initialState);
+    const [state, formAction] = useActionState(updateCategoryWithName, []);
 
     return <ListItem
         secondaryAction={
@@ -52,16 +48,9 @@ export default function EditingCategoryItem({
                 onChange={(event) => setNameInputValue(event.target.value)}
                 required
                 name="name"
+                error={state.some(error => error.input === "name")}
+                helperText={state.find(error => error.input === "name")?.helperText}
             />
-
-            {state.errorMessages && state.errorMessages.map(errorMessage => (
-                <Alert
-                    key={errorMessage}
-                    severity="error"
-                >
-                    {errorMessage}
-                </Alert>
-            ))}
         </Form>
     </ListItem>;
 }

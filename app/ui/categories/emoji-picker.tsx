@@ -32,6 +32,7 @@ export default function EmojiPicker({ emoji = "💵" }: EmojiPickerProps) {
             {!pickerIsOpen ?
                 <>
                     <IconButton
+                        sx={{ width: 64, height: 64 }}
                         color={"inherit"}
                         onClick={() => setPickerIsOpen(true)}
                     >{selectedEmoji}</IconButton>
