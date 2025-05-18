@@ -71,7 +71,7 @@ export async function createExpense(previousState: Error[], formData: FormData):
 
     await sql`
         INSERT INTO expenses
-        VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryName})
+        VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryName || null})
     `;
 
     revalidatePath("/expenses");

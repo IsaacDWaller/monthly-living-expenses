@@ -68,7 +68,9 @@ export default function CreateExpense({ categories }: CreateExpenseProps) {
                                 error={state.some(error => error.input === "price")}
                             />
 
-                            <FormHelperText error>{state.find(error => error.input === "price")?.helperText}</FormHelperText>
+                            <FormHelperText error>
+                                {state.find(error => error.input === "price")?.helperText}
+                            </FormHelperText>
                         </FormControl>
                     </Stack>
 

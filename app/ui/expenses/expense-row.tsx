@@ -1,11 +1,6 @@
 import { deleteExpense } from "@/app/lib/expenses/actions";
+import DeleteDialog from "@/app/ui/DeleteDialog";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -30,35 +25,19 @@ export default function ExpenseRow({
 
     const deleteExpenseWithID = deleteExpense.bind(null, id);
 
-    function handleDeleteButtonClick() {
+    function handleDelete() {
         deleteExpenseWithID();
         setDialogIsOpen(false);
     }
 
     return <>
-        <Dialog
-            open={dialogIsOpen}
+        <DeleteDialog
+            isOpen={dialogIsOpen}
+            title="Delete expense"
+            text="Confirm you want to delete this expense"
+            onDelete={handleDelete}
             onClose={() => setDialogIsOpen(false)}
-            disableRestoreFocus
-        >
-            <DialogTitle>Delete expense</DialogTitle>
-
-            <DialogContent>
-                <DialogContentText>
-                    Confirm you want to delete this expense
-                </DialogContentText>
-            </DialogContent>
-
-            <DialogActions>
-                <Button
-                    color="error"
-                    onClick={handleDeleteButtonClick}
-                    autoFocus
-                >Delete</Button>
-
-                <Button onClick={() => setDialogIsOpen(false)}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
+        />
 
         <TableRow>
             <TableCell>

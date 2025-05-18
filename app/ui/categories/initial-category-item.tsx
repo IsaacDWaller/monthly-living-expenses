@@ -1,14 +1,9 @@
 "use client";
 
 import { deleteCategory } from "@/app/lib/categories/actions";
+import DeleteDialog from "@/app/ui/DeleteDialog";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -31,36 +26,19 @@ export default function InitialCategoryItem({
 
     const deleteCategoryWithName = deleteCategory.bind(null, name);
 
-    function handleDeleteButtonClick() {
+    function handleDelete() {
         deleteCategoryWithName();
         setDialogIsOpen(false);
     }
 
     return <>
-        <Dialog
-            open={dialogIsOpen}
+        <DeleteDialog
+            isOpen={dialogIsOpen}
+            title="Delete category"
+            text="Confirm you want to delete this category"
+            onDelete={handleDelete}
             onClose={() => setDialogIsOpen(false)}
-            disableRestoreFocus
-        >
-            <DialogTitle>Delete category?</DialogTitle>
-
-            <DialogContent>
-                <DialogContentText>
-                    Confirm you want to delete {emoji} {name}
-                </DialogContentText>
-            </DialogContent>
-
-            <DialogActions>
-                <Button
-                    onClick={handleDeleteButtonClick}
-                    autoFocus
-                >
-                    Delete
-                </Button>
-
-                <Button onClick={() => setDialogIsOpen(false)}>Cancel</Button>
-            </DialogActions>
-        </Dialog>
+        />
 
         <ListItem
             secondaryAction={
