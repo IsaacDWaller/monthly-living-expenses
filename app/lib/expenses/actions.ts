@@ -77,3 +77,15 @@ export async function createExpense(previousState: Error[], formData: FormData):
     revalidatePath("/expenses");
     redirect("/expenses");
 }
+
+export async function deleteExpense(id: bigint) {
+    await sql`DELETE FROM expenses WHERE id = ${id}`;
+    const existingExpenses = await sql`SELECT 1 FROM expenses`;
+
+    if (!existingExpenses.length) {
+        await sql`DROP TABLE expenses`;
+    }
+
+    revalidatePath("/expenses");
+    redirect("/expenses");
+}

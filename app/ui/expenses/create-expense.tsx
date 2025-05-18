@@ -6,6 +6,7 @@ import CategorySelect from "@/app/ui/expenses/category-select";
 import LocalisationProvider from "@/app/ui/LocalisationProvider";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -16,7 +17,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Form from "next/form";
 import { useActionState } from "react";
-import FormHelperText from "@mui/material/FormHelperText";
 
 type CreateExpenseProps = { categories: Category[] };
 
@@ -49,12 +49,10 @@ export default function CreateExpense({ categories }: CreateExpenseProps) {
                                         helperText: state.find(error => error.input === "date")?.helperText,
                                     }
                                 }}
-                            // error
-                            // helperText
                             />
                         </LocalisationProvider>
 
-                        <FormControl>
+                        <FormControl fullWidth>
                             <InputLabel htmlFor="price">Price</InputLabel>
 
                             <OutlinedInput

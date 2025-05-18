@@ -1,13 +1,13 @@
 "use client";
 
 import { createCategory } from "@/app/lib/categories/actions";
+import EmojiPicker from "@/app/ui/categories/emoji-picker";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Form from "next/form";
 import { useActionState } from "react";
-import EmojiPicker from "@/app/ui/categories/emoji-picker";
-import { Stack } from "@mui/material";
 
 export default function CreateCategory() {
     const [state, formAction] = useActionState(createCategory, []);

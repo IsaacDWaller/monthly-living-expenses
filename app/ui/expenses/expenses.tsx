@@ -1,4 +1,6 @@
-import { getExpenses } from "@/app/lib/expenses/data";
+"use client";
+
+import { Expense } from "@/app/lib/expenses/definitions";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,10 +9,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import ExpenseRow from "./expense-row";
 
-export default async function Expenses() {
-    const expenses = await getExpenses();
+type ExpensesProps = { expenses: Expense[] }
 
+export default function Expenses({ expenses }: ExpensesProps) {
     return <>
         <Typography variant="h2">Expenses</Typography>
 
@@ -22,29 +25,19 @@ export default async function Expenses() {
                         <TableCell>Description</TableCell>
                         <TableCell>Price</TableCell>
                         <TableCell>Category</TableCell>
+                        <TableCell>Delete</TableCell>
                     </TableRow>
                 </TableHead>
 
                 <TableBody>
-                    {expenses.map(expense => (
-                        <TableRow key={expense.id}>
-                            <TableCell>
-                                {new Intl.DateTimeFormat("en-AU")
-                                    .format(expense.date)}
-                            </TableCell>
-
-                            <TableCell>{expense.description}</TableCell>
-
-                            <TableCell>
-                                {new Intl.NumberFormat("en-AU", {
-                                    style: "currency",
-                                    currency: "AUD",
-                                }).format(expense["price_in_cents"] / 100)}
-                            </TableCell>
-
-                            <TableCell>{expense["category_name"]}</TableCell>
-                        </TableRow>
-                    ))}
+                    {expenses.map(expense => <ExpenseRow
+                        key={expense.id}
+                        id={expense.id}
+                        date={expense.date}
+                        description={expense.description}
+                        priceInCents={expense["price_in_cents"]}
+                        categoryName={expense["category_name"]}
+                    />)}
                 </TableBody>
             </Table>
         </TableContainer>
