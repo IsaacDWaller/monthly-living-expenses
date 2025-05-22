@@ -9,10 +9,13 @@ import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
 
-type CategorySelectProps = { categories: Category[] };
+type CategorySelectProps = { categories: Category[], initialState?: string };
 
-export default function CategorySelect({ categories }: CategorySelectProps) {
-    const [selectedCategory, setSelectedCategory] = useState("");
+export default function CategorySelect({
+    categories,
+    initialState,
+}: CategorySelectProps) {
+    const [selectedCategory, setSelectedCategory] = useState(initialState || "");
 
     return <Stack direction="row" spacing={2}>
         <FormControl fullWidth>

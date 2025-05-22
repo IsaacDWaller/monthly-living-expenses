@@ -28,8 +28,14 @@ const ExpenseSchema = z.object({
         }),
 });
 
-export async function createExpense(previousState: Error[], formData: FormData): Promise<Error[]> {
-    const date = dayjs(formData.get("date")!.toString(), "DD/MM/YYYY",).format("YYYY-MM-DD");
+export async function createExpense(
+    previousState: Error[],
+    formData: FormData,
+): Promise<Error[]> {
+    const date = dayjs(
+        formData.get("date")!.toString(),
+        "DD/MM/YYYY",
+    ).format("YYYY-MM-DD");
 
     const parseResult = ExpenseSchema.safeParse({
         date,
@@ -72,6 +78,54 @@ export async function createExpense(previousState: Error[], formData: FormData):
     await sql`
         INSERT INTO expenses
         VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryName || null})
+    `;
+
+    revalidatePath("/expenses");
+    redirect("/expenses");
+}
+
+export async function updateExpense(
+    id: bigint,
+    previousState: Error[],
+    formData: FormData,
+): Promise<Error[]> {
+    const date = dayjs(
+        formData.get("date")!.toString(),
+        "DD/MM/YYYY",
+    ).format("YYYY-MM-DD");
+
+    const parseResult = ExpenseSchema.safeParse({
+        date,
+        description: formData.get("description"),
+        price: formData.get("price"),
+    });
+
+    const errors = [];
+
+    if (!dayjs(date).isSameOrBefore(dayjs())) {
+        errors.push({ input: "date", helperText: "Please enter up to today" });
+    }
+
+    if (!parseResult.success) {
+        errors.push(...parseResult.error.errors.map(error => ({
+            input: error.path[0],
+            helperText: error.message,
+        } as Error)));
+    }
+
+    if (errors.length) return errors;
+
+    const expense = {
+        date,
+        description: parseResult.data!.description.trim(),
+        priceInCents: Math.round(parseResult.data!.price * 100),
+        categoryName: formData.get("category-name"),
+    };
+
+    await sql`
+        UPDATE expenses
+        SET date = ${expense.date}, description = ${expense.description}, price_in_cents = ${expense.priceInCents}, category_name = ${expense.categoryName || null}
+        WHERE id = ${id}
     `;
 
     revalidatePath("/expenses");

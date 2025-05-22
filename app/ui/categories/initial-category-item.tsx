@@ -1,9 +1,10 @@
 "use client";
 
 import { deleteCategory } from "@/app/lib/categories/actions";
-import DeleteDialog from "@/app/ui/DeleteDialog";
+import CustomDialog from "@/app/ui/CustomDialog";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
+import DialogContentText from "@mui/material/DialogContentText";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -32,13 +33,18 @@ export default function InitialCategoryItem({
     }
 
     return <>
-        <DeleteDialog
+        <CustomDialog
             isOpen={dialogIsOpen}
             title="Delete category"
-            text="Confirm you want to delete this category"
-            onDelete={handleDelete}
+            confirmButtonText="Delete"
+            confirmButtonColour="error"
+            onConfirm={handleDelete}
             onClose={() => setDialogIsOpen(false)}
-        />
+        >
+            <DialogContentText>
+                Confirm you want to delete this category
+            </DialogContentText>
+        </CustomDialog>
 
         <ListItem
             secondaryAction={

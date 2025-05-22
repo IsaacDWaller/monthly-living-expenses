@@ -9,6 +9,6 @@ export default async function Page() {
 
     return <>
         <CreateExpense categories={categories} />
-        <Expenses expenses={expenses} />
+        <Expenses expenses={expenses} categories={categories} />
     </>;
 }

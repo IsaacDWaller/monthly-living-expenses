@@ -1,6 +1,8 @@
 "use client";
 
+import { Category } from "@/app/lib/categories/definitions";
 import { Expense } from "@/app/lib/expenses/definitions";
+import ExpenseRow from "@/app/ui/expenses/expense-row";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,11 +11,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import ExpenseRow from "./expense-row";
 
-type ExpensesProps = { expenses: Expense[] }
+type ExpensesProps = { expenses: Expense[], categories: Category[] };
 
-export default function Expenses({ expenses }: ExpensesProps) {
+export default function Expenses({ expenses, categories }: ExpensesProps) {
     return <>
         <Typography variant="h2">Expenses</Typography>
 
@@ -25,6 +26,7 @@ export default function Expenses({ expenses }: ExpensesProps) {
                         <TableCell>Description</TableCell>
                         <TableCell>Price</TableCell>
                         <TableCell>Category</TableCell>
+                        <TableCell>Edit</TableCell>
                         <TableCell>Delete</TableCell>
                     </TableRow>
                 </TableHead>
@@ -37,6 +39,7 @@ export default function Expenses({ expenses }: ExpensesProps) {
                         description={expense.description}
                         priceInCents={expense["price_in_cents"]}
                         categoryName={expense["category_name"]}
+                        categories={categories}
                     />)}
                 </TableBody>
             </Table>
