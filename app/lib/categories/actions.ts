@@ -28,13 +28,6 @@ export async function createCategory(previousState: Error[], formData: FormData)
         } as Error));
     }
 
-    await sql`
-        CREATE TABLE IF NOT EXISTS categories (
-            name VARCHAR(64) PRIMARY KEY,
-            emoji VARCHAR(2)
-        )
-    `;
-
     const { name, emoji } = parseResult.data;
     const trimmedName = name.trim();
 
@@ -50,7 +43,7 @@ export async function createCategory(previousState: Error[], formData: FormData)
 
     await sql`
         INSERT INTO categories
-        VALUES (${trimmedName}, ${emoji})
+        VALUES (DEFAULT, ${trimmedName}, ${emoji})
     `;
 
     revalidatePath("/categories");
@@ -58,7 +51,7 @@ export async function createCategory(previousState: Error[], formData: FormData)
 }
 
 export async function updateCategory(
-    extras: { oldName: string },
+    id: bigint,
     previousState: Error[],
     formData: FormData,
 ): Promise<Error[]> {
@@ -90,21 +83,15 @@ export async function updateCategory(
     await sql`
         UPDATE categories
         SET name = ${trimmedName}, emoji = ${emoji}
-        WHERE name = ${extras.oldName}
+        WHERE id = ${id}
     `;
 
     revalidatePath("/categories");
     redirect("/categories");
 }
 
-export async function deleteCategory(name: string) {
-    await sql`DELETE FROM categories WHERE name = ${name}`;
-    const existingCategories = await sql`SELECT 1 FROM categories`;
-
-    if (!existingCategories.length) {
-        await sql`DROP TABLE categories`;
-    }
-
+export async function deleteCategory(id: bigint) {
+    await sql`DELETE FROM categories WHERE id = ${id}`;
     revalidatePath("/categories");
     redirect("/categories");
 }

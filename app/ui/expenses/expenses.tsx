@@ -1,7 +1,5 @@
-"use client";
-
-import { Category } from "@/app/lib/categories/definitions";
-import { Expense } from "@/app/lib/expenses/definitions";
+import { getCategories } from "@/app/lib/categories/data";
+import { getExpenses } from "@/app/lib/expenses/data";
 import ExpenseRow from "@/app/ui/expenses/expense-row";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -12,9 +10,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-type ExpensesProps = { expenses: Expense[], categories: Category[] };
+export default async function Expenses() {
+    const expenses = await getExpenses();
+    const categories = await getCategories();
 
-export default function Expenses({ expenses, categories }: ExpensesProps) {
     return <>
         <Typography variant="h2">Expenses</Typography>
 
@@ -38,7 +37,7 @@ export default function Expenses({ expenses, categories }: ExpensesProps) {
                         date={expense.date}
                         description={expense.description}
                         priceInCents={expense["price_in_cents"]}
-                        categoryName={expense["category_name"]}
+                        categoryID={expense["category_id"]}
                         categories={categories}
                     />)}
                 </TableBody>

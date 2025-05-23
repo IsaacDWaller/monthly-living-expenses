@@ -58,26 +58,16 @@ export async function createExpense(
 
     if (errors.length) return errors;
 
-    await sql`
-        CREATE TABLE IF NOT EXISTS expenses (
-            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            date DATE,
-            description VARCHAR(64),
-            price_in_cents INTEGER,
-            category_name VARCHAR(64) REFERENCES categories(name)
-        )
-    `;
-
     const expense = {
         date,
         description: parseResult.data!.description.trim(),
         priceInCents: Math.round(parseResult.data!.price * 100),
-        categoryName: formData.get("category-name"),
+        categoryID: formData.get("category-id"),
     };
 
     await sql`
         INSERT INTO expenses
-        VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryName || null})
+        VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryID || null})
     `;
 
     revalidatePath("/expenses");
@@ -119,12 +109,12 @@ export async function updateExpense(
         date,
         description: parseResult.data!.description.trim(),
         priceInCents: Math.round(parseResult.data!.price * 100),
-        categoryName: formData.get("category-name"),
+        categoryID: formData.get("category-id"),
     };
 
     await sql`
         UPDATE expenses
-        SET date = ${expense.date}, description = ${expense.description}, price_in_cents = ${expense.priceInCents}, category_name = ${expense.categoryName || null}
+        SET date = ${expense.date}, description = ${expense.description}, price_in_cents = ${expense.priceInCents}, category_id = ${expense.categoryID || null}
         WHERE id = ${id}
     `;
 
@@ -134,12 +124,6 @@ export async function updateExpense(
 
 export async function deleteExpense(id: bigint) {
     await sql`DELETE FROM expenses WHERE id = ${id}`;
-    const existingExpenses = await sql`SELECT 1 FROM expenses`;
-
-    if (!existingExpenses.length) {
-        await sql`DROP TABLE expenses`;
-    }
-
     revalidatePath("/expenses");
     redirect("/expenses");
 }

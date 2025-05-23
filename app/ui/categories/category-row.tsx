@@ -1,9 +1,8 @@
 "use client";
 
-import { Category } from "@/app/lib/categories/definitions";
-import { deleteExpense, updateExpense } from "@/app/lib/expenses/actions";
+import { deleteCategory, updateCategory } from "@/app/lib/categories/actions";
 import CustomDialog from "@/app/ui/CustomDialog";
-import ExpenseForm from "@/app/ui/expenses/expense-form";
+import CategoryForm from "@/app/ui/categories/category-form";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -12,82 +11,60 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 
-type ExpenseRowProps = {
+type CategoryRowProps = {
     id: bigint,
-    date: Date,
-    description: string,
-    priceInCents: number,
-    categoryID: bigint,
-    categories: Category[],
+    name: string,
+    emoji: string,
 }
 
-export default function ExpenseRow({
+export default function CategoryRow({
     id,
-    date,
-    description,
-    priceInCents,
-    categoryID,
-    categories,
-}: ExpenseRowProps) {
+    name,
+    emoji,
+}: CategoryRowProps) {
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
 
-    const editExpenseWithID = updateExpense.bind(null, id);
-    const deleteExpenseWithID = deleteExpense.bind(null, id);
+    const editCategoryWithID = updateCategory.bind(null, id);
+    const deleteCategoryWithID = deleteCategory.bind(null, id);
 
     function handleDelete() {
-        deleteExpenseWithID();
+        deleteCategoryWithID();
         setDeleteDialogIsOpen(false);
     }
 
     return <>
         <CustomDialog
             isOpen={editDialogIsOpen}
-            title="Edit expense"
+            title="Edit category"
             confirmButtonText="Save"
-            formID="edit-expense-form"
+            formID="edit-category-form"
             onClose={() => setEditDialogIsOpen(false)}
         >
-            <ExpenseForm
-                id="edit-expense-form"
-                date={date}
-                description={description}
-                priceInCents={priceInCents}
-                categoryID={categoryID}
-                categories={categories}
-                action={editExpenseWithID}
+            <CategoryForm
+                id="edit-category-form"
+                name={name}
+                emoji={emoji}
+                action={editCategoryWithID}
             />
         </CustomDialog>
 
         <CustomDialog
             isOpen={deleteDialogIsOpen}
-            title="Delete expense"
+            title="Delete category"
             confirmButtonText="Delete"
             confirmButtonColour="error"
             onConfirm={handleDelete}
             onClose={() => setDeleteDialogIsOpen(false)}
         >
             <DialogContentText>
-                Confirm you want to delete this expense
+                Confirm you want to delete this category
             </DialogContentText>
         </CustomDialog>
 
         <TableRow>
-            <TableCell>
-                {new Intl.DateTimeFormat("en-AU")
-                    .format(date)}
-            </TableCell>
-
-            <TableCell>{description}</TableCell>
-
-            <TableCell>
-                {new Intl.NumberFormat("en-AU", {
-                    style: "currency",
-                    currency: "AUD",
-                }).format(priceInCents / 100)}
-            </TableCell>
-
-            <TableCell>{categoryID}</TableCell>
+            <TableCell>{emoji}</TableCell>
+            <TableCell>{name}</TableCell>
 
             <TableCell>
                 <IconButton onClick={() => setEditDialogIsOpen(true)}>

@@ -21,7 +21,7 @@ type ExpenseFormProps = {
     date?: Date,
     description?: string,
     priceInCents?: number,
-    categoryName?: string,
+    categoryID?: bigint,
     categories: Category[],
     action: (previousState: Error[], formData: FormData) => Promise<Error[]>,
 };
@@ -31,7 +31,7 @@ export default function ExpenseForm({
     date,
     description,
     priceInCents,
-    categoryName,
+    categoryID,
     categories,
     action,
 }: ExpenseFormProps) {
@@ -90,7 +90,7 @@ export default function ExpenseForm({
 
             <CategorySelect
                 categories={categories}
-                initialState={categoryName}
+                initialCategoryID={categoryID}
             />
         </Stack>
     </Form>;

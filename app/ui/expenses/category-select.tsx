@@ -9,13 +9,13 @@ import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
 
-type CategorySelectProps = { categories: Category[], initialState?: string };
+type CategorySelectProps = { categories: Category[], initialCategoryID?: bigint };
 
 export default function CategorySelect({
     categories,
-    initialState,
+    initialCategoryID,
 }: CategorySelectProps) {
-    const [selectedCategory, setSelectedCategory] = useState(initialState || "");
+    const [selectedCategory, setSelectedCategory] = useState(initialCategoryID || "");
 
     return <Stack direction="row" spacing={2}>
         <FormControl fullWidth>
@@ -26,10 +26,10 @@ export default function CategorySelect({
                 label="Category"
                 value={selectedCategory}
                 onChange={event => setSelectedCategory(event.target.value)}
-                name="category-name"
+                name="category-id"
             >
                 {categories.map(category => (
-                    <MenuItem key={category.name} value={category.name}>
+                    <MenuItem key={category.name} value={category.id.toString()}>
                         {category.emoji} {category.name}
                     </MenuItem>
                 ))}
@@ -37,7 +37,7 @@ export default function CategorySelect({
         </FormControl>
 
         {selectedCategory && <Button
-            sx={{ minWidth: 192 }}
+            sx={{ minWidth: 160 }}
             color="error"
             onClick={() => setSelectedCategory("")}
         >Clear Category</Button>}

@@ -16,43 +16,41 @@ type EmojiSelectEvent = {
     unified: string,
 };
 
-type EmojiPickerProps = { emoji?: string };
+type EmojiPickerProps = { initialEmoji?: string };
 
-export default function EmojiPicker({ emoji = "💵" }: EmojiPickerProps) {
+export default function EmojiPicker({ initialEmoji = "💵" }: EmojiPickerProps) {
     const [pickerIsOpen, setPickerIsOpen] = useState(false);
-    const [selectedEmoji, setSelectedEmoji] = useState(emoji);
+    const [selectedEmoji, setSelectedEmoji] = useState(initialEmoji);
 
     function handleEmojiSelect(event: EmojiSelectEvent) {
         setSelectedEmoji(event.native);
         setPickerIsOpen(false);
     }
 
-    return (
-        <>
-            {!pickerIsOpen ?
-                <>
-                    <IconButton
-                        sx={{ width: 64, height: 64 }}
-                        color={"inherit"}
-                        onClick={() => setPickerIsOpen(true)}
-                    >{selectedEmoji}</IconButton>
+    return <>
+        {!pickerIsOpen ?
+            <>
+                <IconButton
+                    sx={{ width: 64, height: 64 }}
+                    color={"inherit"}
+                    onClick={() => setPickerIsOpen(true)}
+                >{selectedEmoji}</IconButton>
 
-                    <input
-                        type="hidden"
-                        value={selectedEmoji}
-                        required
-                        name="emoji"
-                    />
-                </>
-                :
-                <Picker
-                    data={getEmojisData}
-                    skinTonePosition={"none"}
-                    previewPosition={"none"}
-                    onEmojiSelect={handleEmojiSelect}
-                    onClickOutside={() => setPickerIsOpen(false)}
+                <input
+                    type="hidden"
+                    value={selectedEmoji}
+                    required
+                    name="emoji"
                 />
-            }
-        </>
-    );
+            </>
+            :
+            <Picker
+                data={getEmojisData}
+                skinTonePosition={"none"}
+                previewPosition={"none"}
+                onEmojiSelect={handleEmojiSelect}
+                onClickOutside={() => setPickerIsOpen(false)}
+            />
+        }
+    </>;
 }
