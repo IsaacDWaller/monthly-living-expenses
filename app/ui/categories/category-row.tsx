@@ -1,12 +1,15 @@
 "use client";
 
 import { deleteCategory, updateCategory } from "@/app/lib/categories/actions";
-import CustomDialog from "@/app/ui/CustomDialog";
+import { RowState } from "@/app/lib/definitions";
 import CategoryForm from "@/app/ui/categories/category-form";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
-import DialogContentText from "@mui/material/DialogContentText";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
@@ -22,60 +25,58 @@ export default function CategoryRow({
     name,
     emoji,
 }: CategoryRowProps) {
-    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
+    const [state, setState] = useState<RowState>(RowState.Initial)
 
-    const editCategoryWithID = updateCategory.bind(null, id);
+    const updateCategoryWithID = updateCategory.bind(null, id);
     const deleteCategoryWithID = deleteCategory.bind(null, id);
 
-    function handleDelete() {
-        deleteCategoryWithID();
-        setDeleteDialogIsOpen(false);
-    }
-
     return <>
-        <CustomDialog
-            isOpen={editDialogIsOpen}
-            title="Edit category"
-            confirmButtonText="Save"
-            formID="edit-category-form"
-            onClose={() => setEditDialogIsOpen(false)}
-        >
-            <CategoryForm
-                id="edit-category-form"
-                name={name}
-                emoji={emoji}
-                action={editCategoryWithID}
-            />
-        </CustomDialog>
-
-        <CustomDialog
-            isOpen={deleteDialogIsOpen}
-            title="Delete category"
-            confirmButtonText="Delete"
-            confirmButtonColour="error"
-            onConfirm={handleDelete}
-            onClose={() => setDeleteDialogIsOpen(false)}
-        >
-            <DialogContentText>
-                Confirm you want to delete this category
-            </DialogContentText>
-        </CustomDialog>
-
         <TableRow>
             <TableCell>{emoji}</TableCell>
             <TableCell>{name}</TableCell>
 
             <TableCell>
-                <IconButton onClick={() => setEditDialogIsOpen(true)}>
+                <IconButton onClick={() => setState(RowState.Editing)}>
                     <EditOutlined />
                 </IconButton>
             </TableCell>
 
             <TableCell>
-                <IconButton onClick={() => setDeleteDialogIsOpen(true)}>
+                <IconButton onClick={() => setState(RowState.Deleting)}>
                     <DeleteOutline />
                 </IconButton>
+            </TableCell>
+        </TableRow>
+
+        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+                <Collapse in={state === RowState.Editing} timeout="auto" unmountOnExit>
+                    <Box sx={{ margin: 1 }}>
+                        <Stack direction="column">
+                            <CategoryForm
+                                name={name}
+                                emoji={emoji}
+                                buttonText="Save"
+                                action={updateCategoryWithID}
+                            />
+
+                            <Button onClick={() => setState(RowState.Initial)}>Cancel</Button>
+                        </Stack>
+                    </Box>
+                </Collapse>
+            </TableCell>
+        </TableRow>
+
+        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+                <Collapse in={state === RowState.Deleting} timeout="auto" unmountOnExit>
+                    <Box sx={{ margin: 1 }}>
+                        <Stack direction="column">
+                            <Button color="error" onClick={deleteCategoryWithID}>Delete</Button>
+                            <Button onClick={() => setState(RowState.Initial)}>Cancel</Button>
+                        </Stack>
+                    </Box>
+                </Collapse>
             </TableCell>
         </TableRow>
     </>;

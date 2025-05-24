@@ -1,5 +1,7 @@
-import { getCategories } from "@/app/lib/categories/data";
-import { getExpenses } from "@/app/lib/expenses/data";
+"use client";
+
+import { Category } from "@/app/lib/categories/definitions";
+import { Expense } from "@/app/lib/expenses/definitions";
 import ExpenseRow from "@/app/ui/expenses/expense-row";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -10,10 +12,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-export default async function Expenses() {
-    const expenses = await getExpenses();
-    const categories = await getCategories();
+type ExpensesProps = { expenses: Expense[], categories: Category[] };
 
+export default function Expenses({ expenses, categories }: ExpensesProps) {
     return <>
         <Typography variant="h2">Expenses</Typography>
 

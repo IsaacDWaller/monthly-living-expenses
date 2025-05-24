@@ -3,7 +3,8 @@
 import { Category } from "@/app/lib/categories/definitions";
 import { Error } from "@/app/lib/definitions";
 import CategorySelect from "@/app/ui/expenses/category-select";
-import LocalisationProvider from "@/app/ui/LocalisationProvider";
+import LocalisationProvider from "@/app/ui/localisation-provider";
+import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -17,27 +18,27 @@ import Form from "next/form";
 import { useActionState } from "react";
 
 type ExpenseFormProps = {
-    id: string,
     date?: Date,
     description?: string,
     priceInCents?: number,
     categoryID?: bigint,
     categories: Category[],
+    buttonText: string,
     action: (previousState: Error[], formData: FormData) => Promise<Error[]>,
 };
 
 export default function ExpenseForm({
-    id,
     date,
     description,
     priceInCents,
     categoryID,
     categories,
+    buttonText,
     action,
 }: ExpenseFormProps) {
     const [state, formAction] = useActionState(action, []);
 
-    return <Form id={id} action={formAction}>
+    return <Form action={formAction}>
         <Stack direction="column" spacing={2}>
             <TextField
                 label="Description"
@@ -48,7 +49,7 @@ export default function ExpenseForm({
                 helperText={state.find(error => error.input === "description")?.helperText}
             />
 
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={2}>
                 <LocalisationProvider>
                     <DatePicker
                         label="Date"
@@ -92,6 +93,8 @@ export default function ExpenseForm({
                 categories={categories}
                 initialCategoryID={categoryID}
             />
+
+            <Button type="submit">{buttonText}</Button>
         </Stack>
     </Form>;
 }

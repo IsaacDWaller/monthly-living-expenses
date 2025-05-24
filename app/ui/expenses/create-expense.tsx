@@ -1,7 +1,6 @@
 import { getCategories } from "@/app/lib/categories/data";
 import { createExpense } from "@/app/lib/expenses/actions";
 import ExpenseForm from "@/app/ui/expenses/expense-form";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
@@ -13,12 +12,10 @@ export default async function CreateExpense() {
 
         <Stack direction="column" spacing={2}>
             <ExpenseForm
-                id="create-expense-form"
                 categories={categories}
+                buttonText="Create"
                 action={createExpense}
             />
-
-            <Button type="submit" form="create-expense-form">Create</Button>
         </Stack>
     </>;
 }
