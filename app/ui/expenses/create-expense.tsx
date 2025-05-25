@@ -8,7 +8,7 @@ export default async function CreateExpense() {
     const categories = await getCategories();
 
     return <>
-        <Typography variant="h2">Create Expense</Typography>
+        <Typography variant="h6">Create Expense</Typography>
 
         <Stack direction="column" spacing={2}>
             <ExpenseForm

@@ -13,7 +13,7 @@ export default async function Categories() {
     const categories = await getCategories();
 
     return <>
-        <Typography variant="h2">Categories</Typography>
+        <Typography variant="h6">Categories</Typography>
 
         <TableContainer component={Paper}>
             <Table>

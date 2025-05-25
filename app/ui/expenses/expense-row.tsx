@@ -32,6 +32,8 @@ export default function ExpenseRow({
     categoryID,
     categories,
 }: ExpenseRowProps) {
+    const category = categories.find(category => category.id === categoryID);
+
     const [state, setState] = useState<RowState>(RowState.Initial);
 
     const updateExpenseWithID = updateExpense.bind(null, id);
@@ -53,7 +55,10 @@ export default function ExpenseRow({
                 }).format(priceInCents / 100)}
             </TableCell>
 
-            <TableCell>{categoryID}</TableCell>
+            <TableCell>
+                {category ? `${category.emoji} ${category.name}` : ""}
+
+            </TableCell>
 
             <TableCell>
                 <IconButton onClick={() => setState(RowState.Editing)}>

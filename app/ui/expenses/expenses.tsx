@@ -16,7 +16,7 @@ type ExpensesProps = { expenses: Expense[], categories: Category[] };
 
 export default function Expenses({ expenses, categories }: ExpensesProps) {
     return <>
-        <Typography variant="h2">Expenses</Typography>
+        <Typography variant="h6">Expenses</Typography>
 
         <TableContainer component={Paper}>
             <Table>
