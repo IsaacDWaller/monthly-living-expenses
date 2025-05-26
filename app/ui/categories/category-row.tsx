@@ -31,7 +31,7 @@ export default function CategoryRow({
     const deleteCategoryWithID = deleteCategory.bind(null, id);
 
     return <>
-        <TableRow>
+        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
             <TableCell>{emoji}</TableCell>
             <TableCell>{name}</TableCell>
 
@@ -48,7 +48,7 @@ export default function CategoryRow({
             </TableCell>
         </TableRow>
 
-        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
+        <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
                 <Collapse in={state === RowState.Editing} timeout="auto" unmountOnExit>
                     <Box sx={{ margin: 1 }}>

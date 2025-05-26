@@ -1,23 +1,23 @@
+import "@/app/globals.css";
 import theme from "@/app/theme";
+import DrawerList from "@/app/ui/drawer-list";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CategoryIcon from "@mui/icons-material/Category";
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import HomeIcon from "@mui/icons-material/Home";
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import { ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
-import Link from "next/link";
-import "./globals.css";
+import React from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,10 +43,38 @@ export const metadata: Metadata = {
 
 const drawerWidth = 256;
 
-const links = [
-  { text: "Home", icon: <HomeIcon />, href: "/" },
-  { text: "Expenses", icon: <AttachMoneyIcon />, href: "/expenses" },
-  { text: "Categories", icon: <CategoryIcon />, href: "categories" },
+const groupedLinks = [
+  [
+    {
+      text: "Home",
+      icon: <HomeIcon />,
+      href: "/",
+    },
+  ],
+  [
+    {
+      text: "Create Expense",
+      icon: <NoteAddIcon />,
+      href: "/expenses/create",
+    },
+    {
+      text: "View Expenses",
+      icon: <AttachMoneyIcon />,
+      href: "/expenses",
+    },
+  ],
+  [
+    {
+      text: "Create Category",
+      icon: <CreateNewFolderIcon />,
+      href: "/categories/create",
+    },
+    {
+      text: "View Categories",
+      icon: <CategoryIcon />,
+      href: "/categories",
+    },
+  ],
 ];
 
 export default function RootLayout({
@@ -64,30 +92,35 @@ export default function RootLayout({
             <Box sx={{ display: "flex" }}>
               <CssBaseline />
 
-              <Drawer sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
-              }}
+              <AppBar position="fixed" sx={{ zIndex: 1_201 }}>
+                <Toolbar>
+                  <Typography variant="h6" noWrap component="div">
+                    Monthly Living Expenses
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+
+              <Drawer
                 variant="permanent"
-                anchor="left"
+                sx={{
+                  width: drawerWidth,
+                  flexShrink: 0,
+                  ["& .MuiDrawer-paper"]: {
+                    width: drawerWidth,
+                    boxSizing: "border-box",
+                  },
+                }}
               >
                 <Toolbar />
-                <Divider />
 
-                <List>
-                  {links.map(link => (
-                    <Link key={link.text} href={link.href}>
-                      <ListItem disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>{link.icon}</ListItemIcon>
-
-                          <ListItemText primary={link.text} />
-                        </ListItemButton>
-                      </ListItem>
-                    </Link>
-                  ))};
-                </List>
+                <Box sx={{ overflow: "auto" }}>
+                  {groupedLinks.map((links, index) => (
+                    <React.Fragment key={index}>
+                      <DrawerList links={links} />
+                      {index < groupedLinks.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </Box>
               </Drawer>
 
               <Box

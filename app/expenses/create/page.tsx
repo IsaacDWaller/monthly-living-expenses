@@ -4,7 +4,7 @@ import ExpenseForm from "@/app/ui/expenses/expense-form";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-export default async function CreateExpense() {
+export default async function Page() {
     const categories = await getCategories();
 
     return <>

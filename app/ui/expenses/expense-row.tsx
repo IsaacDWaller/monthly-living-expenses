@@ -40,7 +40,7 @@ export default function ExpenseRow({
     const deleteExpenseWithID = deleteExpense.bind(null, id);
 
     return <>
-        <TableRow>
+        <TableRow sx={{ '& > *': { border: "unset" } }}>
             <TableCell>
                 {new Intl.DateTimeFormat("en-AU")
                     .format(date)}
@@ -71,9 +71,9 @@ export default function ExpenseRow({
                     <DeleteOutline />
                 </IconButton>
             </TableCell>
-        </TableRow>
+        </TableRow >
 
-        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
+        <TableRow>
             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                 <Collapse in={state === RowState.Editing} timeout="auto" unmountOnExit>
                     <Box sx={{ margin: 1 }}>
@@ -92,11 +92,7 @@ export default function ExpenseRow({
                         </Stack>
                     </Box>
                 </Collapse>
-            </TableCell>
-        </TableRow>
 
-        <TableRow sx={{ "& > *": { borderTop: "unset", borderBottom: "unset" } }}>
-            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                 <Collapse in={state === RowState.Deleting} timeout="auto" unmountOnExit>
                     <Box sx={{ margin: 1 }}>
                         <Stack direction="column">
@@ -106,6 +102,6 @@ export default function ExpenseRow({
                     </Box>
                 </Collapse>
             </TableCell>
-        </TableRow>
+        </TableRow >
     </>;
 }
