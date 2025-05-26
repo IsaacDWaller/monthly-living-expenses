@@ -9,7 +9,10 @@ import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import { useState } from "react";
 
-type CategorySelectProps = { categories: Category[], initialCategoryID?: bigint };
+interface CategorySelectProps {
+    categories: Category[],
+    initialCategoryID?: bigint,
+};
 
 export default function CategorySelect({
     categories,

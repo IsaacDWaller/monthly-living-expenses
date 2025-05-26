@@ -1,4 +1,4 @@
-export type Expense = {
+export interface Expense {
     id: bigint,
     date: Date,
     description: string,
@@ -6,7 +6,7 @@ export type Expense = {
     category_id: bigint,
 };
 
-export type ExpenseAndCategory = {
+export interface ExpenseAndCategory {
     id: bigint,
     date: Date,
     description: string,

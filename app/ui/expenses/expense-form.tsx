@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import Form from "next/form";
 import { useActionState } from "react";
 
-type ExpenseFormProps = {
+interface ExpenseFormProps {
     date?: Date,
     description?: string,
     priceInCents?: number,

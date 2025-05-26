@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import Form from "next/form";
 import { useActionState } from "react";
 
-type CategoryFormProps = {
+interface CategoryFormProps {
     name?: string,
     emoji?: string,
     buttonText: string,

@@ -5,7 +5,7 @@ import Picker from "@emoji-mart/react";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 
-type EmojiSelectEvent = {
+interface EmojiSelectEvent {
     aliases: string[],
     id: string,
     keywords: string[],
@@ -16,7 +16,7 @@ type EmojiSelectEvent = {
     unified: string,
 };
 
-type EmojiPickerProps = { initialEmoji?: string };
+interface EmojiPickerProps { initialEmoji?: string };
 
 export default function EmojiPicker({ initialEmoji = "💵" }: EmojiPickerProps) {
     const [pickerIsOpen, setPickerIsOpen] = useState(false);

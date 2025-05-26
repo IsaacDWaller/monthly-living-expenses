@@ -15,7 +15,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 
-type ExpenseRowProps = {
+interface ExpenseRowProps {
     id: bigint,
     date: Date,
     description: string,

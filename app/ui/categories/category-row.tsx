@@ -14,11 +14,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 
-type CategoryRowProps = {
-    id: bigint,
-    name: string,
-    emoji: string,
-}
+interface CategoryRowProps { id: bigint, name: string, emoji: string };
 
 export default function CategoryRow({
     id,

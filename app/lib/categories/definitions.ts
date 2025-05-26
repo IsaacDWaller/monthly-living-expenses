@@ -1,5 +1,1 @@
-export type Category = {
-    id: bigint,
-    name: string,
-    emoji: string,
-};
+export interface Category { id: bigint, name: string, emoji: string };
