@@ -7,12 +7,9 @@ import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
 import DateInput from "@/app/ui/expenses/date-input";
 import DescriptionInput from "@/app/ui/expenses/description-input";
+import PriceInput from "@/app/ui/expenses/price-input";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { PickerValue } from "@mui/x-date-pickers/internals";
@@ -123,6 +120,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
             newSearchParams.set(key, value.toString());
         }
 
+        setState([]);
         replace(`${pathname}?${newSearchParams}`);
     }
 
@@ -184,47 +182,27 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                 </Stack>
 
                 <Stack direction="row" spacing={2}>
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="minimum-price">Minimum Price</InputLabel>
+                    <PriceInput
+                        label="Minimum Price"
+                        defaultValue={parseInt(
+                            searchParams.get("minimumPriceInCents")!,
+                        ) / 100 || ""}
+                        name="minimum-price"
+                        state={state.find(error => (
+                            error.input === "minimumPriceInCents")
+                        )}
+                    />
 
-                        <OutlinedInput
-                            id="minimum-price"
-                            label="Minimum Price"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            }
-                            defaultValue={parseInt(searchParams.get("minimumPriceInCents")!) / 100 || ""}
-                            name="minimum-price"
-                            error={state.some(error => error.input === "minimumPriceInCents")}
-                        />
-
-                        <FormHelperText error>
-                            {state.find(error => error.input === "minimumPriceInCents")?.helperText}
-                        </FormHelperText>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="maximum-price">Maximum Price</InputLabel>
-
-                        <OutlinedInput
-                            id="maximum-price"
-                            label="Maximum Price"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            }
-                            defaultValue={parseInt(searchParams.get("maximumPriceInCents")!) / 100 || ""}
-                            name="maximum-price"
-                            error={state.some(error => error.input === "maximumPriceInCents")}
-                        />
-
-                        <FormHelperText error>
-                            {state.find(error => error.input === "maximumPriceInCents")?.helperText}
-                        </FormHelperText>
-                    </FormControl>
+                    <PriceInput
+                        label="Maximum Price"
+                        defaultValue={parseInt(
+                            searchParams.get("maximumPriceInCents")!,
+                        ) / 100 || ""}
+                        name="maximum-price"
+                        state={state.find(error => (
+                            error.input === "maximumPriceInCents")
+                        )}
+                    />
                 </Stack>
 
                 <Stack direction="row" spacing={2}>

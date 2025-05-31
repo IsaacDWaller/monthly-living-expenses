@@ -4,19 +4,15 @@ import { Category } from "@/app/lib/categories/definitions";
 import { Error } from "@/app/lib/definitions";
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
+import DateInput from "@/app/ui/expenses/date-input";
 import DescriptionInput from "@/app/ui/expenses/description-input";
+import PriceInput from "@/app/ui/expenses/price-input";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import { PickerValue } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import Form from "next/form";
 import { useActionState, useState } from "react";
-import DateInput from "@/app/ui/expenses/date-input";
 
 interface ExpenseFormProps {
     date?: Date,
@@ -70,29 +66,16 @@ export default function ExpenseForm({
                     name="date"
                 />
 
-                <FormControl fullWidth>
-                    <InputLabel htmlFor="price">Price</InputLabel>
-
-                    <OutlinedInput
-                        id="price"
-                        label="Price"
-                        startAdornment={
-                            <InputAdornment position="start">
-                                $
-                            </InputAdornment>
-                        }
-                        defaultValue={
-                            priceInCents && (priceInCents / 100).toFixed(2)
-                        }
-                        required
-                        name="price"
-                        error={state.some(error => error.input === "price")}
-                    />
-
-                    <FormHelperText error>
-                        {state.find(error => error.input === "price")?.helperText}
-                    </FormHelperText>
-                </FormControl>
+                <PriceInput
+                    label="Price"
+                    defaultValue={
+                        priceInCents &&
+                        (priceInCents / 100).toFixed(2)
+                    }
+                    required
+                    name="price"
+                    state={state.find(error => error.input === "price")}
+                />
             </Stack>
 
             <Stack direction="row" spacing={2}>
