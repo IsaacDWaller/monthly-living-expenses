@@ -46,8 +46,8 @@ export async function createCategory(previousState: Error[], formData: FormData)
         VALUES (DEFAULT, ${trimmedName}, ${emoji})
     `;
 
-    revalidatePath("/categories");
-    redirect("/categories");
+    revalidatePath("/categories/create");
+    redirect("/categories/create");
 }
 
 export async function updateCategory(

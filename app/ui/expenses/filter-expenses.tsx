@@ -1,12 +1,14 @@
 "use client";
 
 import { Category } from "@/app/lib/categories/definitions";
+import { Error } from "@/app/lib/definitions";
 import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
 import CustomDatePicker from "@/app/ui/expenses/custom-date-picker";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -16,12 +18,14 @@ import Typography from "@mui/material/Typography";
 import { PickerValue } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import Form from "next/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 
 dayjs.extend(customParseFormat);
+dayjs.extend(isSameOrBefore);
 
 const FilterSchema = z.object({
     fromDate: z.string().date().optional(),
@@ -59,6 +63,9 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
             searchParams.get("categoryID") : "",
     });
 
+    const [state, setState] = useState([] as Error[]);
+    console.log(state)
+
     const pathname = usePathname();
     const { replace } = useRouter();
 
@@ -86,6 +93,29 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
         };
 
         const parseResult = FilterSchema.safeParse(filters);
+
+        const errors = [];
+
+        if (!dayjs(parseResult.data?.fromDate).isSameOrBefore(dayjs())) {
+            errors.push({ input: "fromDate", helperText: "Please enter up to today" });
+        }
+
+        if (!dayjs(parseResult.data?.toDate).isSameOrBefore(dayjs())) {
+            errors.push({ input: "toDate", helperText: "Please enter up to today" });
+        }
+
+        if (!parseResult.success) {
+            errors.push(...parseResult.error.errors.map(error => ({
+                input: error.path[0],
+                helperText: error.message,
+            } as Error)));
+        }
+
+        if (errors.length) {
+            setState(errors);
+            return;
+        }
+
         const newSearchParams = new URLSearchParams();
 
         for (const [key, value] of Object.entries(parseResult.data!)) {
@@ -104,6 +134,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
             "category-id": "",
         });
 
+        setState([]);
         replace(pathname);
     }
 
@@ -116,8 +147,8 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                     label="Description"
                     defaultValue={searchParams.get("description") || ""}
                     name="description"
-                // error={state.some(error => error.input === "description")}
-                // helperText={state.find(error => error.input === "description")?.helperText}
+                    error={state.some(error => error.input === "description")}
+                    helperText={state.find(error => error.input === "description")?.helperText}
                 />
 
                 <Stack direction="row" spacing={2}>
@@ -127,6 +158,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                                 label="From Date"
                                 value={inputValues["from-date"]}
                                 onChange={event => handleInputChange("from-date", event)}
+                                state={state.find(error => error.input === "fromDate")}
                                 name="from-date"
                             />
 
@@ -143,6 +175,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                                 label="To Date"
                                 value={inputValues["to-date"]}
                                 onChange={event => handleInputChange("to-date", event)}
+                                state={state.find(error => error.input === "toDate")}
                                 name="to-date"
                             />
 
@@ -168,12 +201,12 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                             }
                             defaultValue={parseInt(searchParams.get("minimumPriceInCents")!) / 100 || ""}
                             name="minimum-price"
-                        // error={state.some(error => error.input === "price")}
+                            error={state.some(error => error.input === "minimumPriceInCents")}
                         />
 
-                        {/* <FormHelperText error>
-                            {state.find(error => error.input === "price")?.helperText}
-                        </FormHelperText> */}
+                        <FormHelperText error>
+                            {state.find(error => error.input === "minimumPriceInCents")?.helperText}
+                        </FormHelperText>
                     </FormControl>
 
                     <FormControl fullWidth>
@@ -189,12 +222,12 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                             }
                             defaultValue={parseInt(searchParams.get("maximumPriceInCents")!) / 100 || ""}
                             name="maximum-price"
-                        // error={state.some(error => error.input === "price")}
+                            error={state.some(error => error.input === "maximumPriceInCents")}
                         />
 
-                        {/* <FormHelperText error>
-                            {state.find(error => error.input === "price")?.helperText}
-                        </FormHelperText> */}
+                        <FormHelperText error>
+                            {state.find(error => error.input === "maximumPriceInCents")?.helperText}
+                        </FormHelperText>
                     </FormControl>
                 </Stack>
 

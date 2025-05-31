@@ -1,3 +1,4 @@
+import { Error } from "@/app/lib/definitions";
 import LocalisationProvider from "@/app/ui/localisation-provider";
 import FormControl from "@mui/material/FormControl";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -11,6 +12,7 @@ interface CustomDatePickerProps {
         value: PickerValue,
         context: PickerChangeHandlerContext<DateValidationError>,
     ) => void,
+    state: Error | undefined,
     name: string,
 };
 
@@ -18,6 +20,7 @@ export default function CustomDatePicker({
     label,
     value = null,
     onChange,
+    state,
     name,
 }: CustomDatePickerProps) {
     return <FormControl fullWidth>
@@ -27,12 +30,12 @@ export default function CustomDatePicker({
                 value={value}
                 onChange={onChange}
                 name={name}
-            // slotProps={{
-            //     textField: {
-            //         error: state.some(error => error.input === "date"),
-            //         helperText: state.find(error => error.input === "date")?.helperText,
-            //     }
-            // }}
+                slotProps={{
+                    textField: {
+                        error: state !== undefined,
+                        helperText: state && state.helperText,
+                    }
+                }}
             />
         </LocalisationProvider>
     </FormControl>;

@@ -63,8 +63,8 @@ export async function createExpense(
         VALUES (DEFAULT, ${expense.date}, ${expense.description}, ${expense.priceInCents}, ${expense.categoryID || null})
     `;
 
-    revalidatePath("/expenses");
-    redirect("/expenses");
+    revalidatePath("/expenses/create");
+    redirect("/expenses/create");
 }
 
 export async function updateExpense(
