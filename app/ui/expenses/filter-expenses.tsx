@@ -13,6 +13,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { PickerValue } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import Form from "next/form";
@@ -55,13 +56,16 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
         "to-date": searchParams.get("toDate") ?
             dayjs(searchParams.get("toDate"), "YYYY-MM-DD") : null,
         "category-id": searchParams.get("categoryID") ?
-            searchParams.get("categoryID") : undefined,
+            searchParams.get("categoryID") : "",
     });
 
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    function handleInputChange(name: string, newValue: any) {
+    function handleInputChange(
+        name: string,
+        newValue: PickerValue | null | string,
+    ) {
         return setInputValues(oldInputValues => (
             { ...oldInputValues, [name]: newValue }
         ));
