@@ -6,6 +6,7 @@ import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
 import CustomDatePicker from "@/app/ui/expenses/custom-date-picker";
+import DescriptionInput from "@/app/ui/expenses/description-input";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -13,7 +14,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { PickerValue } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
@@ -64,7 +64,6 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
     });
 
     const [state, setState] = useState([] as Error[]);
-    console.log(state)
 
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -143,12 +142,9 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
 
         <Form action={handleFormSubmit}>
             <Stack direction="column" spacing={2}>
-                <TextField
-                    label="Description"
+                <DescriptionInput
                     defaultValue={searchParams.get("description") || ""}
-                    name="description"
-                    error={state.some(error => error.input === "description")}
-                    helperText={state.find(error => error.input === "description")?.helperText}
+                    state={state.find(error => error.input === "description")}
                 />
 
                 <Stack direction="row" spacing={2}>

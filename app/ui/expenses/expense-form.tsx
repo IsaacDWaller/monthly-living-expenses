@@ -3,6 +3,8 @@
 import { Category } from "@/app/lib/categories/definitions";
 import { Error } from "@/app/lib/definitions";
 import CategorySelect from "@/app/ui/expenses/category-select";
+import ClearButton from "@/app/ui/expenses/clear-button";
+import DescriptionInput from "@/app/ui/expenses/description-input";
 import LocalisationProvider from "@/app/ui/localisation-provider";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -11,12 +13,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Form from "next/form";
 import { useActionState, useState } from "react";
-import ClearButton from "@/app/ui/expenses/clear-button";
 
 interface ExpenseFormProps {
     date?: Date,
@@ -30,7 +30,7 @@ interface ExpenseFormProps {
 
 export default function ExpenseForm({
     date,
-    description,
+    description = "",
     priceInCents,
     categoryID = "",
     categories,
@@ -42,13 +42,10 @@ export default function ExpenseForm({
 
     return <Form action={formAction}>
         <Stack direction="column" spacing={2}>
-            <TextField
-                label="Description"
+            <DescriptionInput
                 defaultValue={description}
                 required
-                name="description"
-                error={state.some(error => error.input === "description")}
-                helperText={state.find(error => error.input === "description")?.helperText}
+                state={state.find(error => error.input === "description")}
             />
 
             <Stack direction="row" spacing={2}>
