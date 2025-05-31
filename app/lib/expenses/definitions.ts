@@ -6,12 +6,11 @@ export interface Expense {
     category_id: bigint,
 };
 
-export interface ExpenseAndCategory {
-    id: bigint,
-    date: Date,
-    description: string,
-    price_in_cents: number,
-    category_id: bigint,
-    name: string,
-    emoji: string,
+export interface ExpenseFilters {
+    fromDate?: string,
+    toDate?: string,
+    description?: string,
+    minimumPriceInCents?: number,
+    maximumPriceInCents?: number,
+    categoryID?: bigint,
 }

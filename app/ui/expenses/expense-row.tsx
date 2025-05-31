@@ -3,6 +3,7 @@
 import { Category } from "@/app/lib/categories/definitions";
 import { RowState } from "@/app/lib/definitions";
 import { deleteExpense, updateExpense } from "@/app/lib/expenses/actions";
+import { getFormattedPrice } from "@/app/lib/utils";
 import ExpenseForm from "@/app/ui/expenses/expense-form";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
@@ -42,22 +43,14 @@ export default function ExpenseRow({
     return <>
         <TableRow sx={{ '& > *': { border: "unset" } }}>
             <TableCell>
-                {new Intl.DateTimeFormat("en-AU")
-                    .format(date)}
+                {new Intl.DateTimeFormat("en-AU").format(date)}
             </TableCell>
 
             <TableCell>{description}</TableCell>
-
-            <TableCell>
-                {new Intl.NumberFormat("en-AU", {
-                    style: "currency",
-                    currency: "AUD",
-                }).format(priceInCents / 100)}
-            </TableCell>
+            <TableCell>{getFormattedPrice(priceInCents)}</TableCell>
 
             <TableCell>
                 {category ? `${category.emoji} ${category.name}` : ""}
-
             </TableCell>
 
             <TableCell>
@@ -82,7 +75,7 @@ export default function ExpenseRow({
                                 date={date}
                                 description={description}
                                 priceInCents={priceInCents}
-                                categoryID={categoryID}
+                                categoryID={categoryID.toString()}
                                 categories={categories}
                                 buttonText="Save"
                                 action={updateExpenseWithID}

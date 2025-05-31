@@ -10,5 +10,7 @@ export default function LocalisationProvider(
     return <LocalizationProvider
         dateAdapter={AdapterDayjs}
         adapterLocale="en-au"
-    >{children}</LocalizationProvider>;
+    >
+        {children}
+    </LocalizationProvider>;
 }

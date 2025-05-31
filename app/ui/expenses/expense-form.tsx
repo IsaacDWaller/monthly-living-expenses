@@ -15,13 +15,14 @@ import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import Form from "next/form";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import ClearButton from "@/app/ui/expenses/clear-button";
 
 interface ExpenseFormProps {
     date?: Date,
     description?: string,
     priceInCents?: number,
-    categoryID?: bigint,
+    categoryID?: string,
     categories: Category[],
     buttonText: string,
     action: (previousState: Error[], formData: FormData) => Promise<Error[]>,
@@ -31,11 +32,12 @@ export default function ExpenseForm({
     date,
     description,
     priceInCents,
-    categoryID,
+    categoryID = "",
     categories,
     buttonText,
     action,
 }: ExpenseFormProps) {
+    const [selectedCategoryID, setSelectedCategoryID] = useState(categoryID);
     const [state, formAction] = useActionState(action, []);
 
     return <Form action={formAction}>
@@ -89,10 +91,20 @@ export default function ExpenseForm({
                 </FormControl>
             </Stack>
 
-            <CategorySelect
-                categories={categories}
-                initialCategoryID={categoryID}
-            />
+            <Stack direction="row" spacing={2}>
+                <CategorySelect
+                    categories={categories}
+                    value={selectedCategoryID}
+                    onChange={event => {
+                        setSelectedCategoryID(event.target.value)
+                    }}
+                />
+
+                {selectedCategoryID && <ClearButton
+                    text="Clear Category"
+                    onClick={() => setSelectedCategoryID("")}
+                />}
+            </Stack>
 
             <Button type="submit">{buttonText}</Button>
         </Stack>

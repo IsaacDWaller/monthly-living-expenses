@@ -82,58 +82,56 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={
-        `${geistSans.variable} ${geistMono.variable} ${roboto.variable}`
-      }>
-        <ThemeProvider theme={theme}>
-          <AppRouterCacheProvider options={{ key: "css" }}>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline />
+  return <html lang="en">
+    <body className={
+      `${geistSans.variable} ${geistMono.variable} ${roboto.variable}`
+    }>
+      <ThemeProvider theme={theme}>
+        <AppRouterCacheProvider options={{ key: "css" }}>
+          <Box sx={{ display: "flex" }}>
+            <CssBaseline />
 
-              <AppBar position="fixed" sx={{ zIndex: 1_201 }}>
-                <Toolbar>
-                  <Typography variant="h6" noWrap component="div">
-                    Monthly Living Expenses
-                  </Typography>
-                </Toolbar>
-              </AppBar>
+            <AppBar position="fixed" sx={{ zIndex: 1_201 }}>
+              <Toolbar>
+                <Typography variant="h6" noWrap component="div">
+                  Monthly Living Expenses
+                </Typography>
+              </Toolbar>
+            </AppBar>
 
-              <Drawer
-                variant="permanent"
-                sx={{
+            <Drawer
+              variant="permanent"
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                ["& .MuiDrawer-paper"]: {
                   width: drawerWidth,
-                  flexShrink: 0,
-                  ["& .MuiDrawer-paper"]: {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                  },
-                }}
-              >
-                <Toolbar />
+                  boxSizing: "border-box",
+                },
+              }}
+            >
+              <Toolbar />
 
-                <Box sx={{ overflow: "auto" }}>
-                  {groupedLinks.map((links, index) => (
-                    <React.Fragment key={index}>
-                      <DrawerList links={links} />
-                      {index < groupedLinks.length - 1 && <Divider />}
-                    </React.Fragment>
-                  ))}
-                </Box>
-              </Drawer>
-
-              <Box
-                component="main"
-                sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-              >
-                <Toolbar />
-                {children}
+              <Box sx={{ overflow: "auto" }}>
+                {groupedLinks.map((links, index) => (
+                  <React.Fragment key={index}>
+                    <DrawerList links={links} />
+                    {index < groupedLinks.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
               </Box>
+            </Drawer>
+
+            <Box
+              component="main"
+              sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+            >
+              <Toolbar />
+              {children}
             </Box>
-          </AppRouterCacheProvider>
-        </ThemeProvider>
-      </body>
-    </html >
-  );
+          </Box>
+        </AppRouterCacheProvider>
+      </ThemeProvider>
+    </body>
+  </html >;
 }

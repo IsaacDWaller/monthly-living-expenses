@@ -1,6 +1,7 @@
 import { getCategories } from "@/app/lib/categories/data";
-import { getExpenses } from "@/app/lib/expenses/data";
+import { getFilteredExpenses } from "@/app/lib/expenses/data";
 import ExpenseRow from "@/app/ui/expenses/expense-row";
+import FilterExpenses from "@/app/ui/expenses/filter-expenses";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,11 +11,44 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-export default async function Page() {
-    const expenses = await getExpenses();
+interface PageProps {
+    searchParams: Promise<{
+        fromDate: string,
+        toDate: string,
+        description: string,
+        minimumPriceInCents: string,
+        maximumPriceInCents: string,
+        categoryID: string,
+    }>
+};
+
+export default async function Page({ searchParams }: PageProps) {
+    const {
+        fromDate,
+        toDate,
+        description,
+        minimumPriceInCents,
+        maximumPriceInCents,
+        categoryID,
+    } = (await searchParams);
+
+    const expenseFilters = {
+        fromDate,
+        toDate,
+        description,
+        minimumPriceInCents: minimumPriceInCents ?
+            parseInt(minimumPriceInCents) : undefined,
+        maximumPriceInCents: maximumPriceInCents ?
+            parseInt(maximumPriceInCents) : undefined,
+        categoryID: categoryID ? BigInt(categoryID) : undefined,
+    }
+
+    const expenses = await getFilteredExpenses(expenseFilters);
     const categories = await getCategories();
 
     return <>
+        <FilterExpenses categories={categories} />
+
         <Typography variant="h6">Expenses</Typography>
 
         <TableContainer component={Paper}>

@@ -1,12 +1,12 @@
 "use server";
 
-import { getSQL } from "@/app/lib/data";
 import { Error } from "@/app/lib/definitions";
+import { neon } from "@neondatabase/serverless";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-const sql = getSQL();
+const sql = neon(process.env.DATABASE_URL!);
 
 const CategorySchema = z.object({
     name: z.string().trim()

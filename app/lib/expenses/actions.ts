@@ -1,7 +1,8 @@
 "use server";
 
-import { getSQL } from "@/app/lib/data";
 import { Error } from "@/app/lib/definitions";
+import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
+import { neon } from "@neondatabase/serverless";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -9,8 +10,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-const sql = getSQL();
-dayjs.extend(customParseFormat)
+const sql = neon(process.env.DATABASE_URL!);
+dayjs.extend(customParseFormat);
 dayjs.extend(isSameOrBefore);
 
 const ExpenseSchema = z.object({
@@ -18,13 +19,10 @@ const ExpenseSchema = z.object({
     description: z.string().trim()
         .min(1, { message: "Please enter at least 1 character" })
         .max(64, { message: "Please enter at most 64 characters" }),
-    price: z.coerce.number({ message: "Please enter a number" })
+    priceInCents: z.coerce.number({ message: "Please enter a number" })
         .positive({ message: "Please enter a positive number" })
-        .lte(21_474_836.47, {
-            message: `Please enter at most ${new Intl.NumberFormat("en-AU", {
-                style: "currency",
-                currency: "AUD",
-            }).format(21_474_836.47)}`
+        .lte(maximumPriceInCents, {
+            message: `Please enter at most ${getFormattedPrice(maximumPriceInCents)}`,
         }),
 });
 
@@ -32,20 +30,15 @@ export async function createExpense(
     previousState: Error[],
     formData: FormData,
 ): Promise<Error[]> {
-    const date = dayjs(
-        formData.get("date")!.toString(),
-        "DD/MM/YYYY",
-    ).format("YYYY-MM-DD");
-
     const parseResult = ExpenseSchema.safeParse({
-        date,
+        date: getDate(formData.get("date")!),
         description: formData.get("description"),
-        price: formData.get("price"),
+        priceInCents: getPriceInCents(formData.get("price")!),
     });
 
     const errors = [];
 
-    if (!dayjs(date).isSameOrBefore(dayjs())) {
+    if (!dayjs(parseResult.data?.date).isSameOrBefore(dayjs())) {
         errors.push({ input: "date", helperText: "Please enter up to today" });
     }
 
@@ -59,9 +52,9 @@ export async function createExpense(
     if (errors.length) return errors;
 
     const expense = {
-        date,
-        description: parseResult.data!.description.trim(),
-        priceInCents: Math.round(parseResult.data!.price * 100),
+        date: parseResult.data?.date,
+        description: parseResult.data?.description.trim(),
+        priceInCents: parseResult.data?.priceInCents,
         categoryID: formData.get("category-id"),
     };
 
@@ -79,20 +72,15 @@ export async function updateExpense(
     previousState: Error[],
     formData: FormData,
 ): Promise<Error[]> {
-    const date = dayjs(
-        formData.get("date")!.toString(),
-        "DD/MM/YYYY",
-    ).format("YYYY-MM-DD");
-
     const parseResult = ExpenseSchema.safeParse({
-        date,
+        date: getDate(formData.get("date")!),
         description: formData.get("description"),
-        price: formData.get("price"),
+        priceInCents: getPriceInCents(formData.get("price")!),
     });
 
     const errors = [];
 
-    if (!dayjs(date).isSameOrBefore(dayjs())) {
+    if (!dayjs(parseResult.data?.date).isSameOrBefore(dayjs())) {
         errors.push({ input: "date", helperText: "Please enter up to today" });
     }
 
@@ -106,9 +94,9 @@ export async function updateExpense(
     if (errors.length) return errors;
 
     const expense = {
-        date,
+        date: parseResult.data?.date,
         description: parseResult.data!.description.trim(),
-        priceInCents: Math.round(parseResult.data!.price * 100),
+        priceInCents: parseResult.data!.priceInCents,
         categoryID: formData.get("category-id"),
     };
 
