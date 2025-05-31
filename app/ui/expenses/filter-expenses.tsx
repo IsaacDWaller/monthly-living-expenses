@@ -8,6 +8,10 @@ import ClearButton from "@/app/ui/expenses/clear-button";
 import DateInput from "@/app/ui/expenses/date-input";
 import DescriptionInput from "@/app/ui/expenses/description-input";
 import PriceInput from "@/app/ui/expenses/price-input";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import Stack from "@mui/material/Stack";
@@ -18,7 +22,8 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import Form from "next/form";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { z } from "zod";
 
 dayjs.extend(customParseFormat);
@@ -60,18 +65,26 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
             searchParams.get("categoryID") : "",
     });
 
+    const formRef = useRef<HTMLFormElement>(null);
     const [state, setState] = useState([] as Error[]);
 
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    function handleInputChange(
+    const submitForm = useDebouncedCallback(
+        () => formRef.current!.requestSubmit(),
+        300,
+    );
+
+    function handleControlledInputChange(
         inputName: string,
         newValue: PickerValue | null | string,
     ) {
-        return setInputValues(oldInputValues => (
+        setInputValues(oldInputValues => (
             { ...oldInputValues, [inputName]: newValue }
         ));
+
+        submitForm();
     }
 
     function handleFormSubmit(formData: FormData) {
@@ -135,97 +148,103 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
         replace(pathname);
     }
 
-    return <>
-        <Typography variant="h6">Filter</Typography>
+    return <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography component="span">Filter</Typography>
+        </AccordionSummary>
 
-        <Form action={handleFormSubmit}>
-            <Stack direction="column" spacing={2}>
-                <DescriptionInput
-                    defaultValue={searchParams.get("description") || ""}
-                    state={state.find(error => error.input === "description")}
-                />
-
-                <Stack direction="row" spacing={2}>
-                    <FormControl fullWidth>
-                        <Stack direction="row" spacing={2}>
-                            <DateInput
-                                label="From Date"
-                                value={inputValues["from-date"]}
-                                onChange={event => handleInputChange("from-date", event)}
-                                state={state.find(error => error.input === "fromDate")}
-                                name="from-date"
-                            />
-
-                            {inputValues["from-date"] && <ClearButton
-                                text="Clear From Date"
-                                onClick={() => handleInputChange("from-date", null)}
-                            />}
-                        </Stack>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <Stack direction="row" spacing={2}>
-                            <DateInput
-                                label="To Date"
-                                value={inputValues["to-date"]}
-                                onChange={event => handleInputChange("to-date", event)}
-                                state={state.find(error => error.input === "toDate")}
-                                name="to-date"
-                            />
-
-                            {inputValues["to-date"] && <ClearButton
-                                text="Clear To Date"
-                                onClick={() => handleInputChange("to-date", null)}
-                            />}
-                        </Stack>
-                    </FormControl>
-                </Stack>
-
-                <Stack direction="row" spacing={2}>
-                    <PriceInput
-                        label="Minimum Price"
-                        defaultValue={parseInt(
-                            searchParams.get("minimumPriceInCents")!,
-                        ) / 100 || ""}
-                        name="minimum-price"
-                        state={state.find(error => (
-                            error.input === "minimumPriceInCents")
-                        )}
+        <AccordionDetails>
+            <Form ref={formRef} action={handleFormSubmit}>
+                <Stack direction="column" spacing={2}>
+                    <DescriptionInput
+                        defaultValue={searchParams.get("description") || ""}
+                        onChange={submitForm}
+                        state={state.find(error => error.input === "description")}
                     />
 
-                    <PriceInput
-                        label="Maximum Price"
-                        defaultValue={parseInt(
-                            searchParams.get("maximumPriceInCents")!,
-                        ) / 100 || ""}
-                        name="maximum-price"
-                        state={state.find(error => (
-                            error.input === "maximumPriceInCents")
-                        )}
-                    />
-                </Stack>
+                    <Stack direction="row" spacing={2}>
+                        <FormControl fullWidth>
+                            <Stack direction="row" spacing={2}>
+                                <DateInput
+                                    label="From Date"
+                                    value={inputValues["from-date"]}
+                                    onChange={event => handleControlledInputChange("from-date", event)}
+                                    state={state.find(error => error.input === "fromDate")}
+                                    name="from-date"
+                                />
 
-                <Stack direction="row" spacing={2}>
-                    <CategorySelect
-                        categories={categories}
-                        value={inputValues["category-id"]!}
-                        onChange={event => handleInputChange(
-                            "category-id",
-                            event.target.value,
-                        )}
-                    />
+                                {inputValues["from-date"] && <ClearButton
+                                    text="Clear From Date"
+                                    onClick={() => handleControlledInputChange("from-date", null)}
+                                />}
+                            </Stack>
+                        </FormControl>
 
-                    {inputValues["category-id"] && <ClearButton
-                        text="Clear Category"
-                        onClick={() => handleInputChange("category-id", "")}
-                    />}
-                </Stack>
+                        <FormControl fullWidth>
+                            <Stack direction="row" spacing={2}>
+                                <DateInput
+                                    label="To Date"
+                                    value={inputValues["to-date"]}
+                                    onChange={event => handleControlledInputChange("to-date", event)}
+                                    state={state.find(error => error.input === "toDate")}
+                                    name="to-date"
+                                />
 
-                <Stack direction="column">
-                    <Button type="submit">Filter</Button>
-                    <Button color="error" onClick={handleClearFilters}>Clear Filters</Button>
+                                {inputValues["to-date"] && <ClearButton
+                                    text="Clear To Date"
+                                    onClick={() => handleControlledInputChange("to-date", null)}
+                                />}
+                            </Stack>
+                        </FormControl>
+                    </Stack>
+
+                    <Stack direction="row" spacing={2}>
+                        <PriceInput
+                            label="Minimum Price"
+                            defaultValue={parseInt(
+                                searchParams.get("minimumPriceInCents")!,
+                            ) / 100 || ""}
+                            onChange={submitForm}
+                            name="minimum-price"
+                            state={state.find(error => (
+                                error.input === "minimumPriceInCents")
+                            )}
+                        />
+
+                        <PriceInput
+                            label="Maximum Price"
+                            defaultValue={parseInt(
+                                searchParams.get("maximumPriceInCents")!,
+                            ) / 100 || ""}
+                            onChange={submitForm}
+                            name="maximum-price"
+                            state={state.find(error => (
+                                error.input === "maximumPriceInCents")
+                            )}
+                        />
+                    </Stack>
+
+                    <Stack direction="row" spacing={2}>
+                        <CategorySelect
+                            categories={categories}
+                            value={inputValues["category-id"]!}
+                            onChange={event => handleControlledInputChange(
+                                "category-id",
+                                event.target.value,
+                            )}
+                        />
+
+                        {inputValues["category-id"] && <ClearButton
+                            text="Clear Category"
+                            onClick={() => handleControlledInputChange("category-id", "")}
+                        />}
+                    </Stack>
+
+                    <Stack direction="column">
+                        <Button color="error" onClick={handleClearFilters}>Clear Filters</Button>
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Form>
-    </>;
+            </Form>
+        </AccordionDetails>
+    </Accordion>;
 }

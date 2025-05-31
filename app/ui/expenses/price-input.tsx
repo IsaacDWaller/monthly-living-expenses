@@ -8,6 +8,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 interface PriceInputProps {
     label: string,
     defaultValue?: number | string | undefined,
+    onChange?: () => void,
     required?: boolean,
     name: string,
     state: Error | undefined,
@@ -16,6 +17,7 @@ interface PriceInputProps {
 export default function PriceInput({
     label,
     defaultValue,
+    onChange,
     required = false,
     name,
     state,
@@ -32,6 +34,7 @@ export default function PriceInput({
                 </InputAdornment>
             }
             defaultValue={defaultValue || ""}
+            onChange={onChange}
             required={required}
             name={name}
             error={state !== undefined}

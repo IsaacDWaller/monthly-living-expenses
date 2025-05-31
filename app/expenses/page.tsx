@@ -47,9 +47,8 @@ export default async function Page({ searchParams }: PageProps) {
     const categories = await getCategories();
 
     return <>
-        <FilterExpenses categories={categories} />
-
         <Typography variant="h6">Expenses</Typography>
+        <FilterExpenses categories={categories} />
 
         <TableContainer component={Paper}>
             <Table>
