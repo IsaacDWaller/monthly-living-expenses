@@ -5,7 +5,7 @@ import { Error } from "@/app/lib/definitions";
 import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
-import CustomDatePicker from "@/app/ui/expenses/custom-date-picker";
+import DateInput from "@/app/ui/expenses/date-input";
 import DescriptionInput from "@/app/ui/expenses/description-input";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -69,11 +69,11 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
     const { replace } = useRouter();
 
     function handleInputChange(
-        name: string,
+        inputName: string,
         newValue: PickerValue | null | string,
     ) {
         return setInputValues(oldInputValues => (
-            { ...oldInputValues, [name]: newValue }
+            { ...oldInputValues, [inputName]: newValue }
         ));
     }
 
@@ -150,7 +150,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
                 <Stack direction="row" spacing={2}>
                     <FormControl fullWidth>
                         <Stack direction="row" spacing={2}>
-                            <CustomDatePicker
+                            <DateInput
                                 label="From Date"
                                 value={inputValues["from-date"]}
                                 onChange={event => handleInputChange("from-date", event)}
@@ -167,7 +167,7 @@ export default function FilterExpenses({ categories }: FilterExpensesProps) {
 
                     <FormControl fullWidth>
                         <Stack direction="row" spacing={2}>
-                            <CustomDatePicker
+                            <DateInput
                                 label="To Date"
                                 value={inputValues["to-date"]}
                                 onChange={event => handleInputChange("to-date", event)}

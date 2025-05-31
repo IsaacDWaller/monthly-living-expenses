@@ -5,7 +5,6 @@ import { Error } from "@/app/lib/definitions";
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
 import DescriptionInput from "@/app/ui/expenses/description-input";
-import LocalisationProvider from "@/app/ui/localisation-provider";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -13,10 +12,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { PickerValue } from "@mui/x-date-pickers/internals";
 import dayjs from "dayjs";
 import Form from "next/form";
 import { useActionState, useState } from "react";
+import DateInput from "@/app/ui/expenses/date-input";
 
 interface ExpenseFormProps {
     date?: Date,
@@ -37,8 +37,21 @@ export default function ExpenseForm({
     buttonText,
     action,
 }: ExpenseFormProps) {
-    const [selectedCategoryID, setSelectedCategoryID] = useState(categoryID);
+    const [inputValues, setInputValues] = useState({
+        "date": date ? dayjs(date) : dayjs(),
+        "category-id": categoryID,
+    });
+
     const [state, formAction] = useActionState(action, []);
+
+    function handleInputChange(
+        inputName: string,
+        newValue: PickerValue | string,
+    ) {
+        return setInputValues(oldInputValues => (
+            { ...oldInputValues, [inputName]: newValue }
+        ));
+    }
 
     return <Form action={formAction}>
         <Stack direction="column" spacing={2}>
@@ -49,19 +62,13 @@ export default function ExpenseForm({
             />
 
             <Stack direction="row" spacing={2}>
-                <LocalisationProvider>
-                    <DatePicker
-                        label="Date"
-                        defaultValue={date ? dayjs(date) : dayjs()}
-                        name="date"
-                        slotProps={{
-                            textField: {
-                                error: state.some(error => error.input === "date"),
-                                helperText: state.find(error => error.input === "date")?.helperText,
-                            }
-                        }}
-                    />
-                </LocalisationProvider>
+                <DateInput
+                    label="Date"
+                    value={inputValues["date"]}
+                    onChange={event => handleInputChange("date", event)}
+                    state={state.find(error => error.input === "date")}
+                    name="date"
+                />
 
                 <FormControl fullWidth>
                     <InputLabel htmlFor="price">Price</InputLabel>
@@ -91,15 +98,15 @@ export default function ExpenseForm({
             <Stack direction="row" spacing={2}>
                 <CategorySelect
                     categories={categories}
-                    value={selectedCategoryID}
+                    value={inputValues["category-id"]}
                     onChange={event => {
-                        setSelectedCategoryID(event.target.value)
+                        handleInputChange("category-id", event.target.value);
                     }}
                 />
 
-                {selectedCategoryID && <ClearButton
+                {inputValues["category-id"] && <ClearButton
                     text="Clear Category"
-                    onClick={() => setSelectedCategoryID("")}
+                    onClick={() => handleInputChange("category-id", "")}
                 />}
             </Stack>
 

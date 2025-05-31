@@ -5,7 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { PickerValue } from "@mui/x-date-pickers/internals/models";
 import { DateValidationError, PickerChangeHandlerContext } from "@mui/x-date-pickers/models";
 
-interface CustomDatePickerProps {
+interface DateInputProps {
     label: string,
     value?: PickerValue | null,
     onChange: (
@@ -16,13 +16,13 @@ interface CustomDatePickerProps {
     name: string,
 };
 
-export default function CustomDatePicker({
+export default function DateInput({
     label,
     value = null,
     onChange,
     state,
     name,
-}: CustomDatePickerProps) {
+}: DateInputProps) {
     return <FormControl fullWidth>
         <LocalisationProvider>
             <DatePicker
