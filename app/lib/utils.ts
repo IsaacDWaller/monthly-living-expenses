@@ -12,3 +12,10 @@ export function getDate(date: FormDataEntryValue): string {
 export function getPriceInCents(price: FormDataEntryValue): number {
     return Math.round(parseFloat(price.toString()) * 100);
 }
+
+export function getPriceAsCurrency(priceInCents: number): string {
+    return new Intl.NumberFormat("en-AU", {
+        style: "currency",
+        currency: "AUD",
+    }).format(priceInCents / 100);
+}

@@ -2,7 +2,7 @@
 
 import { Category } from "@/app/lib/categories/definitions";
 import { Error } from "@/app/lib/definitions";
-import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
+import { getDate, getPriceAsCurrency, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
 import CategorySelect from "@/app/ui/expenses/category-select";
 import ClearButton from "@/app/ui/expenses/clear-button";
 import DateInput from "@/app/ui/expenses/date-input";
@@ -39,13 +39,13 @@ const FilterSchema = z.object({
     minimumPriceInCents: z.coerce.number({ message: "Please enter a number" })
         .positive({ message: "Please enter a positive number" })
         .lte(maximumPriceInCents, {
-            message: `Please enter at most ${getFormattedPrice(maximumPriceInCents)}`,
+            message: `Please enter at most ${getPriceAsCurrency(maximumPriceInCents)}`,
         })
         .optional(),
     maximumPriceInCents: z.coerce.number({ message: "Please enter a number" })
         .positive({ message: "Please enter a positive number" })
         .lte(maximumPriceInCents, {
-            message: `Please enter at most ${getFormattedPrice(maximumPriceInCents)}`,
+            message: `Please enter at most ${getPriceAsCurrency(maximumPriceInCents)}`,
         })
         .optional(),
     categoryID: z.coerce.bigint().optional(),

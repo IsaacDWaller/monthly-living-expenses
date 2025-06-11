@@ -1,7 +1,7 @@
 "use server";
 
 import { Error } from "@/app/lib/definitions";
-import { getDate, getFormattedPrice, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
+import { getDate, getPriceAsCurrency, getPriceInCents, maximumPriceInCents } from "@/app/lib/utils";
 import { neon } from "@neondatabase/serverless";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -22,7 +22,7 @@ const ExpenseSchema = z.object({
     priceInCents: z.coerce.number({ message: "Please enter a number" })
         .positive({ message: "Please enter a positive number" })
         .lte(maximumPriceInCents, {
-            message: `Please enter at most ${getFormattedPrice(maximumPriceInCents)}`,
+            message: `Please enter at most ${getPriceAsCurrency(maximumPriceInCents)}`,
         }),
 });
 

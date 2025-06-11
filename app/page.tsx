@@ -1,13 +1,7 @@
 import { getGroupedSums, getSumInCents } from "@/app/lib/expenses/data";
+import { getPriceAsCurrency } from "@/app/lib/utils";
 import BarGraph from "@/app/ui/bar-graph";
 import Typography from "@mui/material/Typography";
-
-function getPriceAsCurrency(priceInCents: number): string {
-  return new Intl.NumberFormat("en-AU", {
-    style: "currency",
-    currency: "AUD",
-  }).format(priceInCents / 100);
-}
 
 export default async function Page() {
   const sumInCents = await getSumInCents();

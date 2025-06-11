@@ -25,7 +25,7 @@ export async function createCategory(previousState: Error[], formData: FormData)
         return parseResult.error.errors.map(error => ({
             input: error.path[0],
             helperText: error.message,
-        } as Error));
+        })) as Error[];
     }
 
     const { name, emoji } = parseResult.data;
@@ -64,7 +64,7 @@ export async function updateCategory(
         return parseResult.error.errors.map(error => ({
             input: error.path[0],
             helperText: error.message,
-        } as Error));
+        })) as Error[];
     }
 
     const { name, emoji } = parseResult.data;

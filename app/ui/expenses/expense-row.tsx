@@ -3,7 +3,7 @@
 import { Category } from "@/app/lib/categories/definitions";
 import { RowState } from "@/app/lib/definitions";
 import { deleteExpense, updateExpense } from "@/app/lib/expenses/actions";
-import { getFormattedPrice } from "@/app/lib/utils";
+import { getPriceAsCurrency } from "@/app/lib/utils";
 import ExpenseForm from "@/app/ui/expenses/expense-form";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import EditOutlined from "@mui/icons-material/EditOutlined";
@@ -47,7 +47,7 @@ export default function ExpenseRow({
             </TableCell>
 
             <TableCell>{description}</TableCell>
-            <TableCell>{getFormattedPrice(priceInCents)}</TableCell>
+            <TableCell>{getPriceAsCurrency(priceInCents)}</TableCell>
 
             <TableCell>
                 {category ? `${category.emoji} ${category.name}` : ""}
