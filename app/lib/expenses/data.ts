@@ -1,3 +1,4 @@
+import { GroupedSum } from "@/app/lib/definitions";
 import { Expense, ExpenseFilters } from "@/app/lib/expenses/definitions";
 import { neon } from "@neondatabase/serverless";
 
@@ -27,4 +28,20 @@ export async function getFilteredExpenses({
             (${categoryID ?? null}::BIGINT IS NULL OR category_id = ${categoryID})
         ORDER BY date DESC
     `) as Expense[];
+}
+
+export async function getSumInCents(): Promise<number> {
+    const data = await sql`SELECT SUM(price_in_cents) AS sum_in_cents FROM expenses`;
+    return data[0]["sum_in_cents"];
+}
+
+export async function getGroupedSums(): Promise<GroupedSum[]> {
+    return await sql`
+        SELECT categories.name, categories.emoji, SUM(price_in_cents)
+        FROM expenses
+        JOIN categories
+        ON category_id = categories.id
+        GROUP BY categories.id
+        ORDER BY SUM(price_in_cents) DESC
+    ` as GroupedSum[];
 }
