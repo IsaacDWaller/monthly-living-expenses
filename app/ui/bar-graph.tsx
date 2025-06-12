@@ -58,9 +58,14 @@ const options: ChartOptions<"bar"> = {
 interface BarGraphProps { groupedSums: GroupedSum[] };
 
 export default function BarGraph({ groupedSums }: BarGraphProps) {
-    return <Bar options={options} data={{
-        labels: groupedSums.map(sum => `${sum.emoji} ${sum.name}`),
-        datasets: [{ data: groupedSums.map(sum => sum.sum / 100) }]
-    }}
-    />;
+    return <>
+        {groupedSums.length ?
+            <Bar options={options} data={{
+                labels: groupedSums.map(sum => `${sum.emoji} ${sum.name}`),
+                datasets: [{ data: groupedSums.map(sum => sum.sum / 100) }]
+            }}
+            /> :
+            <p>No expenses</p>
+        }
+    </>;
 }

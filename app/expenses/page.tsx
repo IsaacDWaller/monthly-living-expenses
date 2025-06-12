@@ -1,5 +1,5 @@
 import { getCategories } from "@/app/lib/categories/data";
-import { getFilteredExpenses } from "@/app/lib/expenses/data";
+import { getExpenses } from "@/app/lib/expenses/data";
 import ExpenseRow from "@/app/ui/expenses/expense-row";
 import FilterExpenses from "@/app/ui/expenses/filter-expenses";
 import Paper from "@mui/material/Paper";
@@ -30,7 +30,7 @@ export default async function Page({ searchParams }: PageProps) {
         minimumPriceInCents,
         maximumPriceInCents,
         categoryID,
-    } = (await searchParams);
+    } = await searchParams;
 
     const expenseFilters = {
         fromDate,
@@ -43,7 +43,7 @@ export default async function Page({ searchParams }: PageProps) {
         categoryID: categoryID ? BigInt(categoryID) : undefined,
     }
 
-    const expenses = await getFilteredExpenses(expenseFilters);
+    const expenses = await getExpenses(expenseFilters);
     const categories = await getCategories();
 
     return <>
